@@ -49,23 +49,26 @@ LinkedHashSet::linkedhs& LinkedHashSet::linkedhs::operator=(const linkedhs& othe
     std::copy(other.data_, other.data_ + other.capacity_, data_);
 }
 
+void LinkedHashSet::linkedhs::updateFullnessFactor() {
+    fullnessFactor_ = size_ / capacity_;
+}
+
 bool LinkedHashSet::linkedhs::insert(const element& e) {
+    updateFullnessFactor();
     if (fullnessFactor_ >= 0.75) {
         rehash();
     }
 
     node* newNode = data_[e.hash() % capacity_];
+    while (newNode) {
+        if (newNode->data_ == e) {
+            std::cout << "Insertion failed. There is the same element exists in the set." << std::endl;
+            return false;
+        }
+        newNode = newNode->next_;
+    }
     if (!newNode) {
         ++size_;
-        fullnessFactor_ = (size_ / capacity_);
-    }
-    else {
-        while (newNode) {
-            if (newNode->data_ == e) {
-                return false;
-            }
-            newNode = newNode->next_;
-        }
     }
 
     newNode = new node(e);
@@ -78,5 +81,39 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
 
 bool LinkedHashSet::linkedhs::remove(const element& e) {
     node* tempNode = data_[e.hash() % capacity_];
+    
+    // if (!tempNode->next_) {
+    //     if (tempNode->data_ == e) {
+    //         tempNode->prevInserted_->nextInserted_ = tempNode->nextInserted_;
+    //         tempNode->nextInserted_->prevInserted_ = tempNode->prevInserted_;
+    //         delete[] tempNode;
 
+    //         --size_;
+    //         fullnessFactor_ = (size_ / capacity_);
+
+    //         std::cout << "Removed: " << e.name_ << std::endl;
+    //         return true;
+    //     }
+    //     else {
+    //         std::cout << "Removal failed. There is no element like this in the set." << std::endl;
+    //         return false;
+    //     }
+    // }
+    // else {
+    //     while (tempNode) {
+            
+    //     }
+    // }
+
+    while (tempNode) {
+        if (tempNode->data_ == e) {
+            if (!data_[e.hash() % capacity_]->next_) {
+                --size_;
+            }
+            
+            tempNode->prevInserted_->nextInserted_ = tempNode->nextInserted_;
+            tempNode->nextInserted_->prevInserted_ = tempNode->prevInserted_;
+            delete[] tempNode;
+        }
+    }
 }
