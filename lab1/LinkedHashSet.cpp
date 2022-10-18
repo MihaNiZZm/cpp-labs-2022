@@ -67,7 +67,7 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
         }
         newNode = newNode->next_;
     }
-    if (!newNode) {
+    if (!data_[e.hash() % capacity_]) {
         ++size_;
     }
 
@@ -81,30 +81,6 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
 
 bool LinkedHashSet::linkedhs::remove(const element& e) {
     node* tempNode = data_[e.hash() % capacity_];
-    
-    // if (!tempNode->next_) {
-    //     if (tempNode->data_ == e) {
-    //         tempNode->prevInserted_->nextInserted_ = tempNode->nextInserted_;
-    //         tempNode->nextInserted_->prevInserted_ = tempNode->prevInserted_;
-    //         delete[] tempNode;
-
-    //         --size_;
-    //         fullnessFactor_ = (size_ / capacity_);
-
-    //         std::cout << "Removed: " << e.name_ << std::endl;
-    //         return true;
-    //     }
-    //     else {
-    //         std::cout << "Removal failed. There is no element like this in the set." << std::endl;
-    //         return false;
-    //     }
-    // }
-    // else {
-    //     while (tempNode) {
-            
-    //     }
-    // }
-
     while (tempNode) {
         if (tempNode->data_ == e) {
             if (!data_[e.hash() % capacity_]->next_) {
@@ -114,6 +90,12 @@ bool LinkedHashSet::linkedhs::remove(const element& e) {
             tempNode->prevInserted_->nextInserted_ = tempNode->nextInserted_;
             tempNode->nextInserted_->prevInserted_ = tempNode->prevInserted_;
             delete[] tempNode;
+
+            std::cout << "Removed: " << e.name_ << std::endl;
+            return true;
         }
     }
+
+    std::cout << "Removal failed. There is no element like this in the set." << std::endl;
+    return false;
 }
