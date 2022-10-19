@@ -5,8 +5,6 @@
 #include <string>
 
 namespace LinkedHashSet {
-    typedef student element;
-    
     struct student {
         student();
         student(unsigned age, std::string name);
@@ -20,14 +18,16 @@ namespace LinkedHashSet {
         std::string name_;
     };
 
+    typedef student element;
+
     struct node {
-        node() = default;
+        node();
         node(element data);
 
         node* prevInserted_;
         node* nextInserted_;
         node* next_;
-        element data_;
+        element nodeValue_;
     };
     
     class linkedhs {
@@ -41,11 +41,11 @@ namespace LinkedHashSet {
             bool operator!=(const iterator& other) const;
 
         private:
-            int idx_;
             node* pointedNode_;
         };
     
         linkedhs();
+        linkedhs(int capacity);
         
         ~linkedhs();
         
@@ -73,17 +73,18 @@ namespace LinkedHashSet {
         void clear();
 
     private:
-        void resize(int newCapacity);
         void rehash();
+        void updateFullnessFactor();
 
         static const int RESIZE_FACTOR = 2;
-        static const int DEFAULT_CAPACITY = 26;
+        static const int DEFAULT_CAPACITY = 32;
 
         int size_;
         int capacity_;
         double fullnessFactor_;
-        LinkedHashSet::node* lastInserted_;
-        LinkedHashSet::node** data_;
+        node* firstInserted_;
+        node* lastInserted_;
+        node** data_;
     };
 }
 

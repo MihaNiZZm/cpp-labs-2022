@@ -26,13 +26,19 @@ long long LinkedHashSet::student::hash() const {
     return abs(h);
 }
 
-LinkedHashSet::node::node() : prevInserted_(nullptr), nextInserted_(nullptr), next_(nullptr), data_(student()) {}
-LinkedHashSet::node::node(element data) : prevInserted_(nullptr), nextInserted_(nullptr), next_(nullptr), data_(data) {}
+LinkedHashSet::node::node() : prevInserted_(nullptr), nextInserted_(nullptr), next_(nullptr), nodeValue_(student()) {}
+LinkedHashSet::node::node(element data) : prevInserted_(nullptr), nextInserted_(nullptr), next_(nullptr), nodeValue_(data) {}
 
-LinkedHashSet::linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), fullnessFactor_(0.0), lastInserted_(nullptr), data_(new node*[capacity_]()) {}
+LinkedHashSet::linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), fullnessFactor_(0.0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()) {}
+LinkedHashSet::linkedhs::linkedhs(int capacity) : size_(0), capacity_(capacity), fullnessFactor_(0.0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[capacity]()) {}
 
 LinkedHashSet::linkedhs::~linkedhs() {
-    delete[] data_;
+    for (int i = 0; i < capacity_; ++i) {
+        if (data_[i] == nullptr) {
+            continue;
+        }
+
+    }
 }
 
 LinkedHashSet::linkedhs::linkedhs(const linkedhs& other) : size_(other.size_), capacity_(other.capacity_), fullnessFactor_(other.fullnessFactor_) {
@@ -50,52 +56,90 @@ LinkedHashSet::linkedhs& LinkedHashSet::linkedhs::operator=(const linkedhs& othe
 }
 
 void LinkedHashSet::linkedhs::updateFullnessFactor() {
-    fullnessFactor_ = size_ / capacity_;
+    fullnessFactor_ = double(size_ / capacity_);
 }
 
 bool LinkedHashSet::linkedhs::insert(const element& e) {
     updateFullnessFactor();
     if (fullnessFactor_ >= 0.75) {
-        rehash();
+        //rehash();
     }
 
-    node* newNode = data_[e.hash() % capacity_];
-    while (newNode) {
-        if (newNode->data_ == e) {
-            std::cout << "Insertion failed. There is the same element exists in the set." << std::endl;
-            return false;
-        }
-        newNode = newNode->next_;
-    }
-    if (!data_[e.hash() % capacity_]) {
+    int idx = e.hash() % capacity_;
+    node* curNode = data_[idx];
+    node* prevNode = nullptr;
+
+    if (!curNode) {
         ++size_;
     }
+    while (curNode) {
+        if (curNode->nodeValue_ == e) {
+            std::cout << "Insertion failed! Element " << e.name_ << " is already in the set!" << std::endl;
+            return false;
+        }
+        prevNode = curNode;
+        curNode = curNode->next_;
+    }
 
-    newNode = new node(e);
-    newNode->prevInserted_ = lastInserted_;
-    lastInserted_->nextInserted_ = newNode;
+    curNode = new node(e);
+    if (prevNode) {
+        prevNode->next_ = curNode;
+    }
 
-    std::cout << "Inserted: " << e.name_ << std::endl;
+    if (!firstInserted_) {
+        firstInserted_ = curNode;
+    }
+    if (lastInserted_) {
+        lastInserted_->nextInserted_ = curNode;
+    }
+    curNode->prevInserted_ = lastInserted_;
+    lastInserted_ = curNode;
+
+    std::cout << "Inserted element " << e.name_ << std::endl;
     return true;
 }
 
 bool LinkedHashSet::linkedhs::remove(const element& e) {
-    node* tempNode = data_[e.hash() % capacity_];
-    while (tempNode) {
-        if (tempNode->data_ == e) {
-            if (!data_[e.hash() % capacity_]->next_) {
-                --size_;
+    int idx = e.hash() % capacity_;
+    node* curNode = data_[idx];
+    node* prevNode = nullptr;
+    
+    while (curNode) {
+        if (curNode->nodeValue_ == e) {
+            if (!prevNode) {
+                data_[idx] = curNode->next_;
+                if (!curNode->next_) {
+                    --size_;
+                }
+            }
+            else {
+                prevNode->next_ = curNode->next_;
             }
             
-            tempNode->prevInserted_->nextInserted_ = tempNode->nextInserted_;
-            tempNode->nextInserted_->prevInserted_ = tempNode->prevInserted_;
-            delete[] tempNode;
-
-            std::cout << "Removed: " << e.name_ << std::endl;
+            if (curNode == firstInserted_) {
+                firstInserted_ = curNode->nextInserted_;
+            }
+            if (curNode == lastInserted_) {
+                lastInserted_ = curNode->prevInserted_;
+            }
+            if (curNode != firstInserted_ && curNode != lastInserted_) {
+                curNode->prevInserted_->nextInserted_ = curNode->nextInserted_;
+                curNode->nextInserted_->prevInserted_ = curNode->prevInserted_;
+            }
+            delete curNode;
+            std::cout << "Removed element " << e.name_ << std::endl;
             return true;
         }
+        prevNode = curNode;
+        curNode = curNode->next_;
     }
 
-    std::cout << "Removal failed. There is no element like this in the set." << std::endl;
+    std::cout << "Removal failed! Element " << e.name_ << " is not exists!" << std::endl;
     return false;
+}
+
+void LinkedHashSet::linkedhs::clear() {
+    // linkedhs* temp = new linkedhs(this->capacity_);
+    // delete[] this;
+    // this = temp;
 }
