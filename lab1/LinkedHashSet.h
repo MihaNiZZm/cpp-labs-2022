@@ -23,6 +23,7 @@ namespace LinkedHashSet {
     struct node {
         node();
         node(element data);
+        void clear();
 
         node* prevInserted_;
         node* nextInserted_;
@@ -34,13 +35,19 @@ namespace LinkedHashSet {
     public:
         class iterator {
         public:
+            iterator(const iterator& other);
+            iterator(node** set, node* node);
+
             element operator*();
             iterator operator++(int);
-            iterator operator--();
+            iterator& operator++();
+            iterator operator--(int);
+            iterator& operator--();
             bool operator==(const iterator& other) const;
             bool operator!=(const iterator& other) const;
 
         private:
+            node** set_;
             node* pointedNode_;
         };
     
