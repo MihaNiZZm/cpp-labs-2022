@@ -10,7 +10,6 @@ LinkedHashSet::student::student(unsigned age, std::string name) : age_(age), nam
 bool LinkedHashSet::student::operator==(const student& other) const {
     return (age_ == other.age_ && name_ == other.name_);
 }
-
 bool LinkedHashSet::student::operator!=(const student& other) const {
     return !(*this == other);
 }
@@ -29,8 +28,39 @@ long long LinkedHashSet::student::hash() const {
 LinkedHashSet::node::node() : prevInserted_(nullptr), nextInserted_(nullptr), next_(nullptr), nodeValue_(student()) {}
 LinkedHashSet::node::node(element data) : prevInserted_(nullptr), nextInserted_(nullptr), next_(nullptr), nodeValue_(data) {}
 
-LinkedHashSet::linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), fullnessFactor_(0.0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()) {}
-LinkedHashSet::linkedhs::linkedhs(int capacity) : size_(0), capacity_(capacity), fullnessFactor_(0.0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[capacity]()) {}
+LinkedHashSet::linkedhs::iterator::iterator(const iterator& other) : set_(other.set_), pointedNode_(other.pointedNode_) {}
+LinkedHashSet::linkedhs::iterator::iterator(node** set, node* node) : set_(set), pointedNode_(node) {}
+
+LinkedHashSet::element LinkedHashSet::linkedhs::iterator::operator*() {
+    return pointedNode_->nodeValue_;
+}
+LinkedHashSet::linkedhs::iterator LinkedHashSet::linkedhs::iterator::operator++(int) {
+    iterator temp(*this);
+    this->pointedNode_ = this->pointedNode_->nextInserted_;
+    return temp;    
+}
+LinkedHashSet::linkedhs::iterator& LinkedHashSet::linkedhs::iterator::operator++() {
+    this->pointedNode_ = this->pointedNode_->nextInserted_;
+    return *this;
+}
+LinkedHashSet::linkedhs::iterator LinkedHashSet::linkedhs::iterator::operator--(int) {
+    iterator temp(*this);
+    this->pointedNode_ = this->pointedNode_->prevInserted_;
+    return temp;    
+}
+LinkedHashSet::linkedhs::iterator& LinkedHashSet::linkedhs::iterator::operator--() {
+    this->pointedNode_ = this->pointedNode_->prevInserted_;
+    return *this;
+}
+bool LinkedHashSet::linkedhs::iterator::operator==(const iterator& other) const {
+    return (pointedNode_ == other.pointedNode_ && set_ == other.set_);
+}
+bool LinkedHashSet::linkedhs::iterator::operator!=(const iterator& other) const {
+    return !(*this == other);
+}
+
+LinkedHashSet::linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), fullnessFactor_(0.0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()), numberOfNodes_(0) {}
+LinkedHashSet::linkedhs::linkedhs(int capacity) : size_(0), capacity_(capacity), fullnessFactor_(0.0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[capacity]()), numberOfNodes_(0) {}
 
 LinkedHashSet::linkedhs::~linkedhs() {
     node* it = firstInserted_;
@@ -43,28 +73,25 @@ LinkedHashSet::linkedhs::~linkedhs() {
     delete[] data_;
 }
 
-LinkedHashSet::linkedhs::linkedhs(const linkedhs& other) : size_(other.size_), capacity_(other.capacity_), fullnessFactor_(other.fullnessFactor_) {
+LinkedHashSet::linkedhs::linkedhs(const linkedhs& other) : size_(other.size_), capacity_(other.capacity_), fullnessFactor_(other.fullnessFactor_), numberOfNodes_(other.numberOfNodes_) {
     data_ = new node*[capacity_]();
     std::copy(other.data_, other.data_ + other.capacity_, data_);
 }
 
 LinkedHashSet::linkedhs& LinkedHashSet::linkedhs::operator=(const linkedhs& other) {
+    this->clear();
     delete[] data_;
     capacity_ = other.capacity_;
     size_ = other.size_;
     fullnessFactor_ = other.fullnessFactor_;
-    data_ = new node*[capacity_]();
+    data_ = new node*[other.capacity_]();
     std::copy(other.data_, other.data_ + other.capacity_, data_);
-}
-
-void LinkedHashSet::linkedhs::updateFullnessFactor() {
-    fullnessFactor_ = double(size_ / capacity_);
 }
 
 bool LinkedHashSet::linkedhs::insert(const element& e) {
     updateFullnessFactor();
     if (fullnessFactor_ >= 0.75) {
-        //rehash();
+        rehash();
     }
 
     int idx = e.hash() % capacity_;
@@ -83,6 +110,7 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
         lastInserted_ = data_[idx];
 
         std::cout << "Inserted element " << e.name_ << std::endl;
+        ++numberOfNodes_;
         return true;
     }
 
@@ -112,9 +140,9 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
     lastInserted_ = curNode;
 
     std::cout << "Inserted element " << e.name_ << std::endl;
+    ++numberOfNodes_;
     return true;
 }
-
 bool LinkedHashSet::linkedhs::remove(const element& e) {
     int idx = e.hash() % capacity_;
     node* curNode = data_[idx];
@@ -146,79 +174,23 @@ bool LinkedHashSet::linkedhs::remove(const element& e) {
             }
             delete curNode;
             std::cout << "Removed element " << e.name_ << std::endl;
+            --numberOfNodes_;
             return true;
         }
         prevNode = curNode;
         curNode = curNode->next_;
     }
 
-    std::cout << "Removal failed! Element " << e.name_ << " is not exists!" << std::endl;
+    std::cout << "Removal failed! Element " << e.name_ << " doesn't exist!" << std::endl;
     return false;
 }
 
-LinkedHashSet::linkedhs::iterator::iterator(node** set, node* node) : set_(set), pointedNode_(node) {}
-LinkedHashSet::linkedhs::iterator::iterator(const iterator& other) : set_(other.set_), pointedNode_(other.pointedNode_) {}
-
-bool LinkedHashSet::linkedhs::iterator::operator==(const iterator& other) const {
-    return (pointedNode_ == other.pointedNode_ && set_ == other.set_);
-}
-
-bool LinkedHashSet::linkedhs::iterator::operator!=(const iterator& other) const {
-    return !(*this == other);
-}
-
-LinkedHashSet::element LinkedHashSet::linkedhs::iterator::operator*() {
-    return pointedNode_->nodeValue_;
-}
-
-LinkedHashSet::linkedhs::iterator LinkedHashSet::linkedhs::iterator::operator++(int) {
-    iterator temp(*this);
-    this->pointedNode_ = this->pointedNode_->nextInserted_;
-    return temp;    
-}
-
-LinkedHashSet::linkedhs::iterator& LinkedHashSet::linkedhs::iterator::operator++() {
-    this->pointedNode_ = this->pointedNode_->nextInserted_;
-    return *this;
-}
-
-LinkedHashSet::linkedhs::iterator LinkedHashSet::linkedhs::iterator::operator--(int) {
-    iterator temp(*this);
-    this->pointedNode_ = this->pointedNode_->prevInserted_;
-    return temp;    
-}
-
-LinkedHashSet::linkedhs::iterator& LinkedHashSet::linkedhs::iterator::operator--() {
-    this->pointedNode_ = this->pointedNode_->prevInserted_;
-    return *this;
-}
-
-bool LinkedHashSet::linkedhs::operator==(const linkedhs& other) const {
-    for (int i = 0; i < capacity_; ++i) {
-        if (!data_[i] && !other.data_[i]) {
-            continue;
-        }
-        if (!data_[i] || !other.data_[i]) {
-            return false;
-        }
-        node* thisTemp = data_[i];
-        node* otherTemp = other.data_[i];
-        while (thisTemp) {
-            if (!otherTemp || thisTemp->nodeValue_ != otherTemp->nodeValue_) {
-                return false;
-            }
-            thisTemp = thisTemp->next_;
-            otherTemp = otherTemp->next_;
-        }
-        if (otherTemp) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool LinkedHashSet::linkedhs::operator!=(const linkedhs& other) const {
-    return !(*this == other);
+void LinkedHashSet::linkedhs::swap(linkedhs& other) {
+    std::swap(data_, other.data_);
+    std::swap(size_, other.size_);
+    std::swap(capacity_, other.capacity_);
+    std::swap(firstInserted_, other.firstInserted_);
+    std::swap(lastInserted_, other.lastInserted_);
 }
 
 size_t LinkedHashSet::linkedhs::size() const {
@@ -258,34 +230,69 @@ LinkedHashSet::linkedhs::iterator LinkedHashSet::linkedhs::find(const element& e
     return iterator(this->data_, lastInserted_->next_);
 }
 
+bool LinkedHashSet::linkedhs::operator==(const linkedhs& other) const {
+    for (int i = 0; i < capacity_; ++i) {
+        if (!data_[i] && !other.data_[i]) {
+            continue;
+        }
+        if (!data_[i] || !other.data_[i]) {
+            return false;
+        }
+        node* thisTemp = data_[i];
+        node* otherTemp = other.data_[i];
+        while (thisTemp) {
+            if (!otherTemp || thisTemp->nodeValue_ != otherTemp->nodeValue_) {
+                return false;
+            }
+            thisTemp = thisTemp->next_;
+            otherTemp = otherTemp->next_;
+        }
+        if (otherTemp) {
+            return false;
+        }
+    }
+    return true;
+}
+bool LinkedHashSet::linkedhs::operator!=(const linkedhs& other) const {
+    return !(*this == other);
+}
+
 LinkedHashSet::linkedhs::iterator LinkedHashSet::linkedhs::begin() {
     return iterator(this->data_, firstInserted_);
 }
-
 LinkedHashSet::linkedhs::iterator LinkedHashSet::linkedhs::end() {
     return iterator(this->data_, lastInserted_->next_);
 }
 
-void LinkedHashSet::linkedhs::swap(linkedhs& other) {
-    std::swap(data_, other.data_);
-    std::swap(size_, other.size_);
-    std::swap(capacity_, other.capacity_);
-    std::swap(firstInserted_, other.firstInserted_);
-    std::swap(lastInserted_, other.lastInserted_);
+void LinkedHashSet::linkedhs::clear() {
+    for (int i = 0; i < capacity_; ++i) {
+        if (!data_[i]) {
+            continue;
+        }
+        node* it = data_[i];
+        node* prev = nullptr;
+        while (it) {
+            prev = it;
+            it = it->next_;
+            delete prev;
+        }
+    }
+    size_ = 0;
+    lastInserted_ = nullptr;
+    firstInserted_ = nullptr;
 }
 
 void LinkedHashSet::linkedhs::rehash() {
-    linkedhs temp;
+    linkedhs temp(capacity_ * 2);
     node* it = firstInserted_;
     while (it) {
         temp.insert(it->nodeValue_);
         it = it->nextInserted_;
     }
-    
+    std::swap(data_, temp.data_);
+    std::swap(capacity_, temp.capacity_);
 }
 
-void LinkedHashSet::linkedhs::clear() {
-    // linkedhs* temp = new linkedhs(this->capacity_);
-    // delete[] this;
-    // this = temp;
+void LinkedHashSet::linkedhs::updateFullnessFactor() {
+    fullnessFactor_ = double(size_ / capacity_);
 }
