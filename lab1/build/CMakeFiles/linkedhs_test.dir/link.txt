@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wpedantic -Wextra  CMakeFiles/linkedhs_test.dir/LinkedHashSet.cpp.o CMakeFiles/linkedhs_test.dir/Tests.cpp.o -o linkedhs_test  lib/libgtest_main.a lib/libgtest.a -lpthread 

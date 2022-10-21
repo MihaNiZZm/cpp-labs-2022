@@ -1,0 +1,5 @@
+if(EXISTS "/home/mihanizzm/cpp-labs-2022/lab1/build/linkedhs_test[1]_tests.cmake")
+  include("/home/mihanizzm/cpp-labs-2022/lab1/build/linkedhs_test[1]_tests.cmake")
+else()
+  add_test(linkedhs_test_NOT_BUILT linkedhs_test_NOT_BUILT)
+endif()
