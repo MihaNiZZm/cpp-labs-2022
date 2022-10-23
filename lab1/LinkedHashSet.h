@@ -88,9 +88,9 @@ namespace LinkedHashSet {
         // Changes this linkedhashset values to other linkedhashset values.
         linkedhs& operator=(const linkedhs& other);
         
-        // Inserts given element in the linkedhashset.
-        // Returns true if the element was inserted successfully,
-        // else returns false.
+        /// Inserts given element in the linkedhashset.
+        /// Returns true if the element was inserted successfully,
+        /// else returns false.
         bool insert(const element& e);
         // Removes given element from the linkedhashset.
         // Returns true if the element was deleted succesfully,

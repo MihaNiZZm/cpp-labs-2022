@@ -109,7 +109,7 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
         data_[idx]->prevInserted_ = lastInserted_;
         lastInserted_ = data_[idx];
 
-        std::cout << "Inserted element " << e.name_ << std::endl;
+        //std::cout << "Inserted element " << e.name_ << std::endl;
         ++numberOfNodes_;
         return true;
     }
@@ -118,7 +118,7 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
     node* prevNode = nullptr;
     while (curNode) {
         if (curNode->nodeValue_ == e) {
-            std::cout << "Insertion failed! Element " << e.name_ << " is already in the set!" << std::endl;
+            //std::cout << "Insertion failed! Element " << e.name_ << " is already in the set!" << std::endl;
             return false;
         }
         prevNode = curNode;
@@ -139,7 +139,7 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
     curNode->prevInserted_ = lastInserted_;
     lastInserted_ = curNode;
 
-    std::cout << "Inserted element " << e.name_ << std::endl;
+    //std::cout << "Inserted element " << e.name_ << std::endl;
     ++numberOfNodes_;
     return true;
 }
@@ -173,7 +173,7 @@ bool LinkedHashSet::linkedhs::remove(const element& e) {
                 curNode->prevInserted_->nextInserted_ = curNode->nextInserted_;
             }
             delete curNode;
-            std::cout << "Removed element " << e.name_ << std::endl;
+            //std::cout << "Removed element " << e.name_ << std::endl;
             --numberOfNodes_;
             return true;
         }
@@ -181,7 +181,7 @@ bool LinkedHashSet::linkedhs::remove(const element& e) {
         curNode = curNode->next_;
     }
 
-    std::cout << "Removal failed! Element " << e.name_ << " doesn't exist!" << std::endl;
+    //std::cout << "Removal failed! Element " << e.name_ << " doesn't exist!" << std::endl;
     return false;
 }
 
