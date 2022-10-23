@@ -3,7 +3,6 @@
 #include "LinkedHashSet.h"
 
 int main(int argc, char** argv) {
-	LinkedHashSet::linkedhs set1;
-	LinkedHashSet::linkedhs set2;
+	LinkedHashSet::linkedhs set1(0);
 	return 0;
 }

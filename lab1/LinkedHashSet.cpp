@@ -89,6 +89,10 @@ LinkedHashSet::linkedhs& LinkedHashSet::linkedhs::operator=(const linkedhs& othe
 }
 
 bool LinkedHashSet::linkedhs::insert(const element& e) {
+    if (capacity_ == 0) {
+        return false;
+    }
+
     updateFullnessFactor();
     if (fullnessFactor_ >= 0.75) {
         rehash();
@@ -144,6 +148,10 @@ bool LinkedHashSet::linkedhs::insert(const element& e) {
     return true;
 }
 bool LinkedHashSet::linkedhs::remove(const element& e) {
+    if (capacity_ == 0) {
+        return false;
+    }
+
     int idx = e.hash() % capacity_;
     node* curNode = data_[idx];
     node* prevNode = nullptr;
@@ -194,11 +202,11 @@ void LinkedHashSet::linkedhs::swap(linkedhs& other) {
 }
 
 size_t LinkedHashSet::linkedhs::size() const {
-    return size_;
+    return numberOfNodes_;
 }
 
 bool LinkedHashSet::linkedhs::empty() const {
-    return (size_ == 0);
+    return (size() == 0);
 }
 
 bool LinkedHashSet::linkedhs::contains(const element& e) const {

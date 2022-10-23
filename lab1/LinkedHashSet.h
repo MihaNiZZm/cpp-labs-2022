@@ -100,7 +100,7 @@ namespace LinkedHashSet {
         // Swaps all fields' vaules of two linkedhashsets.
         void swap(linkedhs& other);
         
-        // Returns 
+        // Returns number of nodes.
         size_t size() const;
         
         // Returns true if this linkedhashset has no elements,
