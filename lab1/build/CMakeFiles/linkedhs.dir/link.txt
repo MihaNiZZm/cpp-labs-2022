@@ -1,1 +1,1 @@
-/usr/bin/c++  -Wall -Wpedantic -Wextra  CMakeFiles/linkedhs.dir/Main.cpp.o CMakeFiles/linkedhs.dir/LinkedHashSet.cpp.o -o linkedhs 
+/usr/bin/c++  -Wall -Wpedantic -Wextra  -fsanitize=address CMakeFiles/linkedhs.dir/Main.cpp.o CMakeFiles/linkedhs.dir/LinkedHashSet.cpp.o -o linkedhs 

@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -isystem /home/mihanizzm/cpp-labs-2022/lab1/build/_deps/googletest-src/googletest/include -isystem /home/mihanizzm/cpp-labs-2022/lab1/build/_deps/googletest-src/googletest
 
-CXX_FLAGS =  -Wall -Wpedantic -Wextra  -std=gnu++2a
+CXX_FLAGS =  -Wall -Wpedantic -Wextra  -fsanitize=address -std=gnu++2a
 
