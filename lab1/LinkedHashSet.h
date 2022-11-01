@@ -50,8 +50,8 @@ namespace LinkedHashSet {
         public:
             // Creates iterator with values copied from other iterator.
             iterator(const iterator& other);
-            // Creates iterator with given set and pointed node.
-            iterator(node** set, node* node);
+            // Creates iterator with given pointed node.
+            iterator(node* node);
 
             // Returns student type value of the node iterator contains.
             element operator*();
@@ -71,7 +71,6 @@ namespace LinkedHashSet {
             bool operator!=(const iterator& other) const;
 
         private:
-            node** set_;
             node* pointedNode_;
         };
     
