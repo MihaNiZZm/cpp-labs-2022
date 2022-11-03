@@ -6,10 +6,12 @@ using namespace LinkedHashSet;
 TEST(insert, inEmpty) {
     linkedhs set;
     student Nadya(14, "Nadya");
+    // CR: ASSERT_???
     EXPECT_EQ(set.insert(Nadya), true);
     EXPECT_EQ(set.size(), 1);
 }
 
+// CR: remove
 TEST(insert, inSameBucket) {
     linkedhs set;
     student Nadya1(14, "Nadya");
@@ -19,7 +21,7 @@ TEST(insert, inSameBucket) {
     EXPECT_EQ(set.insert(Nadya2), true);
     EXPECT_EQ(set.size(), 2);
 }
-
+// CR: remove
 TEST(insert, inDifferentBuckets) {
     linkedhs set;
     student Nadya(14, "Nadya");
@@ -30,6 +32,7 @@ TEST(insert, inDifferentBuckets) {
     EXPECT_EQ(set.size(), 2);
 }
 
+// CR: insert many
 TEST(insert, withRehash) {
     linkedhs set(1); // created set with capacity = 1.
     student Nadya(14, "Nadya");
@@ -43,6 +46,20 @@ TEST(insert, inZeroCapacitySet) {
     student Nadya(14, "Nadya");
     EXPECT_EQ(set.insert(Nadya), false);
 }
+
+// CR: test for insert same element
+TEST(Insert, SameElement) {
+    linkedhs lhs;
+    ASSSERT_EQ(lhs.size(), 0);
+
+    student Nadya(14, "Nadya");
+    ASSERT_EQ(lhs.insert(Nadya), true);
+    ASSSERT_EQ(lhs.size(), 1);
+
+    ASSERT_EQ(lhs.insert(Nadya), false);
+    ASSSERT_EQ(lhs.size(), 1);
+}
+// CR: test insert different element
 
 TEST(remove, fromZeroCapacitySet) {
     linkedhs set(0);

@@ -43,7 +43,16 @@ namespace LinkedHashSet {
 
         friend class linkedhs;
     };
-    
+    class MyStudentHasher {
+      public:
+        long long operator()(student & student) {
+
+        }
+    };
+    // MyStudentHasher()(s1)
+    // Hasher()(e);
+    // lhs<int>
+    template<typename T, typename Hasher = std::hash<T>>
     class linkedhs {
     public:
         class iterator {
@@ -52,7 +61,7 @@ namespace LinkedHashSet {
             iterator(const iterator& other);
             // Creates iterator with given pointed node.
             iterator(node* node);
-
+  
             // Returns student type value of the node iterator contains.
             element operator*();
             // Returns same value of iterator and updates this iterator: it will contain next inserted node.
@@ -77,6 +86,7 @@ namespace LinkedHashSet {
         // Creates empty linkedhashset with capacity = 32.
         linkedhs();
         // Creates empty linkedhashset with given capacity.
+        // CR: move to private section / remove if not needed
         linkedhs(int capacity);
         
         // Deletes all linkedhashset data.
@@ -123,9 +133,9 @@ namespace LinkedHashSet {
         
         // Returns iterator that contains node that was inserted first in this linkedhashset.
         // If this linkedhashset is empty, returns iterator that contains nullptr node.
-        iterator begin();
+        iterator begin() const;
         // Returns iterator that contains nullptr.
-        iterator end();
+        iterator end() const;
         
         // Deletes all nodes of this linkedhashset, sets size to 0.
         void clear();
@@ -140,6 +150,7 @@ namespace LinkedHashSet {
         int numberOfNodes_;
         int size_;
         int capacity_;
+        // CR: make local variable
         double fullnessFactor_;
         node* firstInserted_;
         node* lastInserted_;
