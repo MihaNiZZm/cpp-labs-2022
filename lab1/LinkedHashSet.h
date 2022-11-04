@@ -145,7 +145,7 @@ namespace LinkedHashSet {
         void redefineRelationsToInsert(node* prevNode, node* nodeToInsert);
 
         static const int RESIZE_FACTOR = 2;
-        static const int DEFAULT_CAPACITY = 32;
+        static const int DEFAULT_CAPACITY = 8;
 
         int numberOfNodes_;
         int size_;

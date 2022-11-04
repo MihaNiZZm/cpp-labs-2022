@@ -5,64 +5,64 @@ using namespace LinkedHashSet;
 
 TEST(Insert, InEmpty) {
     linkedhs set;
-    student Nadya(14, "Nadya");
+    student n(14, "n");
     // CR: ASSERT_???
-    ASSERT_EQ(set.insert(Nadya), true);
+    ASSERT_EQ(set.insert(n), true);
     ASSERT_EQ(set.size(), 1);
 }
 
 // CR: insert many
 TEST(Insert, Many) {
     linkedhs set;
-    student Nadya1(14, "Nadya");
-    student Nadya2(2, "Nadya");
-    student Nadya3(144, "Nadya");
-    student Nadya4(112, "Nadya");
-    student Nadya5(1412, "Nadya");
-    student Nadya6(13452, "Nadya");
-    student Nadya7(53414, "Nadya");
-    student Nadya8(132, "Nadya");
-    student Nadya9(1465, "Nadya");
-    student Nadya10(1287, "Nadya");
-    student Nadya11(1004, "Nadya");
-    student Nadya12(12676, "Nadya");
-    student Nadya13(1804, "Nadya");
-    student Nadya14(9912, "Nadya");
-    student Nadya15(1465, "Nadya");
-    student Nadya16(127, "Nadya");
+    student n1(14, "nsdf");
+    student n2(2, "nsdsa");
+    student n3(144, "ngbdf");
+    student n4(112, "nas21");
+    student n5(1412, "ngsd");
+    student n6(13452, "naadsfg");
+    student n7(53414, "ndgfg");
+    student n8(132, "nasdf");
+    student n9(1465, "ngads");
+    student n10(1287, "nasdg");
+    student n11(1004, "nasdbc");
+    student n12(12676, "asdfn");
+    student n13(1804, "asdfgn");
+    student n14(9912, "bvsdfn");
+    student n15(1465, "5ersn");
+    student n16(127, "ngadf");
 
     ASSERT_EQ(set.size(), 0);
-    ASSERT_TRUE(set.insert(Nadya1));
+    ASSERT_TRUE(set.insert(n1));
     ASSERT_EQ(set.size(), 1);
-    ASSERT_TRUE(set.insert(Nadya2));
+    ASSERT_TRUE(set.insert(n2));
     ASSERT_EQ(set.size(), 2);
-    ASSERT_TRUE(set.insert(Nadya3));
+    ASSERT_TRUE(set.insert(n3));
     ASSERT_EQ(set.size(), 3);
-    ASSERT_TRUE(set.insert(Nadya4));
+    ASSERT_TRUE(set.insert(n4));
     ASSERT_EQ(set.size(), 4);
-    ASSERT_TRUE(set.insert(Nadya5));
+    ASSERT_TRUE(set.insert(n5));
     ASSERT_EQ(set.size(), 5);
-    ASSERT_TRUE(set.insert(Nadya6));
+    ASSERT_TRUE(set.insert(n6));
     ASSERT_EQ(set.size(), 6);
-    ASSERT_TRUE(set.insert(Nadya7));
+    ASSERT_TRUE(set.insert(n7));
     ASSERT_EQ(set.size(), 7);
-    ASSERT_TRUE(set.insert(Nadya8));
+    ASSERT_TRUE(set.insert(n8));
     ASSERT_EQ(set.size(), 8);
-    ASSERT_TRUE(set.insert(Nadya9));
+    ASSERT_TRUE(set.insert(n9));
     ASSERT_EQ(set.size(), 9);
-    ASSERT_TRUE(set.insert(Nadya10));
+    ASSERT_TRUE(set.insert(n10));
     ASSERT_EQ(set.size(), 10);
-    ASSERT_TRUE(set.insert(Nadya11));
+    ASSERT_TRUE(set.insert(n11));
     ASSERT_EQ(set.size(), 11);
-    ASSERT_TRUE(set.insert(Nadya12));
+    ASSERT_TRUE(set.insert(n12));
     ASSERT_EQ(set.size(), 12);
-    ASSERT_TRUE(set.insert(Nadya13));
+    ASSERT_TRUE(set.insert(n13));
     ASSERT_EQ(set.size(), 13);
-    ASSERT_TRUE(set.insert(Nadya14));
+    ASSERT_TRUE(set.insert(n14));
     ASSERT_EQ(set.size(), 14);
-    ASSERT_TRUE(set.insert(Nadya15));
+    ASSERT_TRUE(set.insert(n15));
     ASSERT_EQ(set.size(), 15);
-    ASSERT_TRUE(set.insert(Nadya16));
+    ASSERT_TRUE(set.insert(n16));
     ASSERT_EQ(set.size(), 16);
 }   
 
@@ -71,22 +71,22 @@ TEST(Insert, SameElement) {
     linkedhs lhs;
     ASSERT_EQ(lhs.size(), 0);
 
-    student Nadya(14, "Nadya");
-    ASSERT_EQ(lhs.insert(Nadya), true);
+    student n(14, "n");
+    ASSERT_EQ(lhs.insert(n), true);
     ASSERT_EQ(lhs.size(), 1);
 
-    ASSERT_EQ(lhs.insert(Nadya), false);
+    ASSERT_EQ(lhs.insert(n), false);
     ASSERT_EQ(lhs.size(), 1);
 }
 
 // CR: test insert different element
 TEST(Insert, Different) {
     linkedhs set;
-    student Nadya(14, "Nadya");
+    student n(14, "n");
     student Vova(22, "Vova");
 
     ASSERT_EQ(set.size(), 0);
-    ASSERT_TRUE(set.insert(Nadya));
+    ASSERT_TRUE(set.insert(n));
     ASSERT_EQ(set.size(), 1);
     ASSERT_TRUE(set.insert(Vova));
     ASSERT_EQ(set.size(), 2);

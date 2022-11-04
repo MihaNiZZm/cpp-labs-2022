@@ -29,7 +29,7 @@ long long student::hash() const {
 
 // node
 
-node::node(element data) : prevInserted_(nullptr), nextInserted_(nullptr), next_(nullptr), nodeValue_(data) {}
+node::node(element data) : prevInserted_(nullptr), nextInserted_(nullptr), prev_(nullptr), next_(nullptr), nodeValue_(data) {}
 
 // iterator
 
@@ -146,7 +146,9 @@ bool linkedhs::remove(const element& e) {
 
     if (!target.pointedNode_->prev_ && !target.pointedNode_->next_) {
         --size_;
-        data_[(*target).hash()] = nullptr;
+        firstInserted_ = nullptr;
+        lastInserted_ = nullptr;
+        data_[(*target).hash() % capacity_] = nullptr;
     }
     redefineRelationsToRemove(target.pointedNode_);
     delete target.pointedNode_;
@@ -239,11 +241,11 @@ void linkedhs::rehash() {
     capacity_ *= 2;
     node** newData = new node*[capacity_]();
     // CR: firstInserted_ = nullptr, ...
+    node* temp = firstInserted_;
     firstInserted_ = nullptr;
     lastInserted_ = nullptr;
     size_ = 0;
     numberOfNodes_ = 0;
-    node* temp = firstInserted_;
     data_ = newData;
     while (temp) {
         insert(temp->nodeValue_);
@@ -253,7 +255,7 @@ void linkedhs::rehash() {
 }
 
 double linkedhs::fullnessFactor() const {
-    return double(size_ / capacity_);
+    return double(size_) / double(capacity_);
 }
 
 void linkedhs::redefineRelationsToRemove(node* node) {
