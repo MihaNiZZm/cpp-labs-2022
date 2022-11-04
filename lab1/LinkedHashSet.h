@@ -6,8 +6,6 @@
 
 namespace LinkedHashSet {
     struct student {
-        // Creates student type variable with name_ = "" and age_ = 0.
-        student();
         // Creates student type variable with given name and age.
         student(unsigned age, std::string name);
 
@@ -38,29 +36,31 @@ namespace LinkedHashSet {
 
         node* prevInserted_;
         node* nextInserted_;
+        node* prev_;
         node* next_;
         element nodeValue_;
 
         friend class linkedhs;
     };
-    class MyStudentHasher {
-      public:
-        long long operator()(student & student) {
+    
+    // class MyStudentHasher {
+    //   public:
+    //     long long operator()(student & student) {
 
-        }
-    };
+    //     }
+    // };
     // MyStudentHasher()(s1)
     // Hasher()(e);
     // lhs<int>
-    template<typename T, typename Hasher = std::hash<T>>
+    //template<typename T, typename Hasher = std::hash<T>>
     class linkedhs {
     public:
         class iterator {
         public:
             // Creates iterator with values copied from other iterator.
-            iterator(const iterator& other);
+            iterator(const iterator& other) = default;
             // Creates iterator with given pointed node.
-            iterator(node* node);
+            explicit iterator(node* node);
   
             // Returns student type value of the node iterator contains.
             element operator*();
@@ -81,13 +81,11 @@ namespace LinkedHashSet {
 
         private:
             node* pointedNode_;
+            friend class linkedhs;
         };
     
         // Creates empty linkedhashset with capacity = 32.
         linkedhs();
-        // Creates empty linkedhashset with given capacity.
-        // CR: move to private section / remove if not needed
-        linkedhs(int capacity);
         
         // Deletes all linkedhashset data.
         ~linkedhs();
@@ -142,7 +140,9 @@ namespace LinkedHashSet {
 
     private:
         void rehash();
-        void updateFullnessFactor();
+        double fullnessFactor() const;
+        void redefineRelationsToRemove(node* node);
+        void redefineRelationsToInsert(node* prevNode, node* nodeToInsert);
 
         static const int RESIZE_FACTOR = 2;
         static const int DEFAULT_CAPACITY = 32;
@@ -150,8 +150,7 @@ namespace LinkedHashSet {
         int numberOfNodes_;
         int size_;
         int capacity_;
-        // CR: make local variable
-        double fullnessFactor_;
+        
         node* firstInserted_;
         node* lastInserted_;
         node** data_;

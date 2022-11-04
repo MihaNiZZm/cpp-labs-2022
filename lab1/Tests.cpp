@@ -3,77 +3,102 @@
 
 using namespace LinkedHashSet;
 
-TEST(insert, inEmpty) {
+TEST(Insert, InEmpty) {
     linkedhs set;
     student Nadya(14, "Nadya");
     // CR: ASSERT_???
-    EXPECT_EQ(set.insert(Nadya), true);
-    EXPECT_EQ(set.size(), 1);
-}
-
-// CR: remove
-TEST(insert, inSameBucket) {
-    linkedhs set;
-    student Nadya1(14, "Nadya");
-    student Nadya2(12, "Nadya");
-    EXPECT_EQ(set.insert(Nadya1), true);
-    EXPECT_EQ(set.size(), 1);
-    EXPECT_EQ(set.insert(Nadya2), true);
-    EXPECT_EQ(set.size(), 2);
-}
-// CR: remove
-TEST(insert, inDifferentBuckets) {
-    linkedhs set;
-    student Nadya(14, "Nadya");
-    student Vanya(14, "Vanya");
-    EXPECT_EQ(set.insert(Nadya), true);
-    EXPECT_EQ(set.size(), 1);
-    EXPECT_EQ(set.insert(Vanya), true);
-    EXPECT_EQ(set.size(), 2);
+    ASSERT_EQ(set.insert(Nadya), true);
+    ASSERT_EQ(set.size(), 1);
 }
 
 // CR: insert many
-TEST(insert, withRehash) {
-    linkedhs set(1); // created set with capacity = 1.
-    student Nadya(14, "Nadya");
-    student Vanya(14, "Vanya");
-    EXPECT_EQ(set.insert(Nadya), true);
-    EXPECT_EQ(set.insert(Vanya), /* set will be resized and rehashed */ true);
-}
+TEST(Insert, Many) {
+    linkedhs set;
+    student Nadya1(14, "Nadya");
+    student Nadya2(2, "Nadya");
+    student Nadya3(144, "Nadya");
+    student Nadya4(112, "Nadya");
+    student Nadya5(1412, "Nadya");
+    student Nadya6(13452, "Nadya");
+    student Nadya7(53414, "Nadya");
+    student Nadya8(132, "Nadya");
+    student Nadya9(1465, "Nadya");
+    student Nadya10(1287, "Nadya");
+    student Nadya11(1004, "Nadya");
+    student Nadya12(12676, "Nadya");
+    student Nadya13(1804, "Nadya");
+    student Nadya14(9912, "Nadya");
+    student Nadya15(1465, "Nadya");
+    student Nadya16(127, "Nadya");
 
-TEST(insert, inZeroCapacitySet) {
-    linkedhs set(0);
-    student Nadya(14, "Nadya");
-    EXPECT_EQ(set.insert(Nadya), false);
-}
+    ASSERT_EQ(set.size(), 0);
+    ASSERT_TRUE(set.insert(Nadya1));
+    ASSERT_EQ(set.size(), 1);
+    ASSERT_TRUE(set.insert(Nadya2));
+    ASSERT_EQ(set.size(), 2);
+    ASSERT_TRUE(set.insert(Nadya3));
+    ASSERT_EQ(set.size(), 3);
+    ASSERT_TRUE(set.insert(Nadya4));
+    ASSERT_EQ(set.size(), 4);
+    ASSERT_TRUE(set.insert(Nadya5));
+    ASSERT_EQ(set.size(), 5);
+    ASSERT_TRUE(set.insert(Nadya6));
+    ASSERT_EQ(set.size(), 6);
+    ASSERT_TRUE(set.insert(Nadya7));
+    ASSERT_EQ(set.size(), 7);
+    ASSERT_TRUE(set.insert(Nadya8));
+    ASSERT_EQ(set.size(), 8);
+    ASSERT_TRUE(set.insert(Nadya9));
+    ASSERT_EQ(set.size(), 9);
+    ASSERT_TRUE(set.insert(Nadya10));
+    ASSERT_EQ(set.size(), 10);
+    ASSERT_TRUE(set.insert(Nadya11));
+    ASSERT_EQ(set.size(), 11);
+    ASSERT_TRUE(set.insert(Nadya12));
+    ASSERT_EQ(set.size(), 12);
+    ASSERT_TRUE(set.insert(Nadya13));
+    ASSERT_EQ(set.size(), 13);
+    ASSERT_TRUE(set.insert(Nadya14));
+    ASSERT_EQ(set.size(), 14);
+    ASSERT_TRUE(set.insert(Nadya15));
+    ASSERT_EQ(set.size(), 15);
+    ASSERT_TRUE(set.insert(Nadya16));
+    ASSERT_EQ(set.size(), 16);
+}   
 
 // CR: test for insert same element
 TEST(Insert, SameElement) {
     linkedhs lhs;
-    ASSSERT_EQ(lhs.size(), 0);
+    ASSERT_EQ(lhs.size(), 0);
 
     student Nadya(14, "Nadya");
     ASSERT_EQ(lhs.insert(Nadya), true);
-    ASSSERT_EQ(lhs.size(), 1);
+    ASSERT_EQ(lhs.size(), 1);
 
     ASSERT_EQ(lhs.insert(Nadya), false);
-    ASSSERT_EQ(lhs.size(), 1);
+    ASSERT_EQ(lhs.size(), 1);
 }
+
 // CR: test insert different element
-
-TEST(remove, fromZeroCapacitySet) {
-    linkedhs set(0);
+TEST(Insert, Different) {
+    linkedhs set;
     student Nadya(14, "Nadya");
-    EXPECT_EQ(set.remove(Nadya), false);
+    student Vova(22, "Vova");
+
+    ASSERT_EQ(set.size(), 0);
+    ASSERT_TRUE(set.insert(Nadya));
+    ASSERT_EQ(set.size(), 1);
+    ASSERT_TRUE(set.insert(Vova));
+    ASSERT_EQ(set.size(), 2);
 }
 
-TEST(remove, fromEmpty) {
+TEST(Remove, FromEmpty) {
     linkedhs set;
     EXPECT_EQ(set.remove(student(15, "Vova")), false);
     EXPECT_EQ(set.size(), 0);
 }
 
-TEST(remove, exists) {
+TEST(Remove, Exists) {
     linkedhs set;
     student Vasya(55, "Vasya");
     set.insert(Vasya);
@@ -81,7 +106,7 @@ TEST(remove, exists) {
     EXPECT_EQ(set.size(), 0);
 }
 
-TEST(remove, lastElementFromNotEmptyBucket) {
+TEST(Remove, LastElementFromNotEmptyBucket) {
     linkedhs set;
     student Vasya1(55, "Vasya"); // ---\ Have same hash. 
     student Vasya2(23, "Vasya"); // ---/
@@ -91,7 +116,7 @@ TEST(remove, lastElementFromNotEmptyBucket) {
     EXPECT_EQ(set.size(), 1);
 }
 
-TEST(remove, firstElementFromNotEmptyBucket) {
+TEST(Remove, FirstElementFromNotEmptyBucket) {
     linkedhs set;
     student Vasya1(55, "Vasya"); // ---\ Have same hash. 
     student Vasya2(23, "Vasya"); // ---/
@@ -101,27 +126,18 @@ TEST(remove, firstElementFromNotEmptyBucket) {
     EXPECT_EQ(set.size(), 1);
 }
 
-TEST(ctor, studentEmpty) {
-    student s1 = student();
-    EXPECT_EQ(s1.age_, 0);
-    EXPECT_EQ(s1.name_, "");
-}
-
-TEST(ctor, studentWithParams) {
+TEST(Ctor, StudentWithParams) {
     student s1 = student(17, "Bill");
     EXPECT_EQ(s1.age_, 17);
     EXPECT_EQ(s1.name_, "Bill");
 }
 
-TEST(ctor, linkedhs) {
+TEST(Ctor, Linkedhs) {
     linkedhs lhs1 = linkedhs();
-    EXPECT_EQ(lhs1.size(), 0);
-
-    linkedhs lhs2 = linkedhs(1234);
     EXPECT_EQ(lhs1.size(), 0);
 }
 
-TEST(iterator, operatorDereference) {
+TEST(Iterator, OperatorDereference) {
     linkedhs lhs1 = linkedhs();
     student s1 = student(25, "Maksim");
     lhs1.insert(s1);
@@ -130,7 +146,7 @@ TEST(iterator, operatorDereference) {
     EXPECT_EQ(*it, s1);
 }
 
-TEST(iterator, incrementOperator) {
+TEST(Iterator, IncrementOperator) {
     linkedhs lhs1 = linkedhs();
     student s1 = student(25, "Maksim");
     student s2 = student(22, "Oleg");
@@ -148,7 +164,7 @@ TEST(iterator, incrementOperator) {
     EXPECT_EQ(*it2, s2);
 }
 
-TEST(iterator, decrementOperator) {
+TEST(Iterator, DecrementOperator) {
     linkedhs lhs1 = linkedhs();
     student s1 = student(25, "Maksim");
     student s2 = student(22, "Oleg");
@@ -168,7 +184,7 @@ TEST(iterator, decrementOperator) {
     EXPECT_EQ(*it2, s1);
 }
 
-TEST(iterator, equalOperator) {
+TEST(Iterator, EqualOperator) {
     linkedhs lhs1 = linkedhs();
     student s1 = student(25, "Maksim");
     student s2 = student(22, "Oleg");
@@ -183,7 +199,7 @@ TEST(iterator, equalOperator) {
     EXPECT_EQ((i1 == i2), false);
 }
 
-TEST(iterator, notEqualOperator) {
+TEST(Iterator, NotEqualOperator) {
     linkedhs lhs1 = linkedhs();
     student s1 = student(25, "Maksim");
     student s2 = student(22, "Oleg");
@@ -198,7 +214,7 @@ TEST(iterator, notEqualOperator) {
     EXPECT_EQ((i1 != i2), true);
 }
 
-TEST(linkedhs, assignmentOperator) {
+TEST(Linkedhs, AssignmentOperator) {
     linkedhs lhs1 = linkedhs();
     linkedhs lhs2 = linkedhs();
 
@@ -216,7 +232,7 @@ TEST(linkedhs, assignmentOperator) {
     EXPECT_EQ((lhs1 == lhs2), false);
 }
 
-TEST(linkedhs, swap) {
+TEST(Linkedhs, Swap) {
     linkedhs lhs1 = linkedhs();
     linkedhs lhs2 = linkedhs();
 
@@ -236,7 +252,7 @@ TEST(linkedhs, swap) {
     EXPECT_EQ(lhs2.contains(s3), false);
 }
 
-TEST(linkedhs, size) {
+TEST(Linkedhs, Size) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -253,7 +269,7 @@ TEST(linkedhs, size) {
     EXPECT_EQ(lhs1.size(), 2);
 }
 
-TEST(linkedhs, empty) {
+TEST(Linkedhs, Empty) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -267,7 +283,7 @@ TEST(linkedhs, empty) {
     EXPECT_EQ(lhs1.empty(), true);
 }
 
-TEST(linkedhs, contains) {
+TEST(Linkedhs, Contains) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -281,7 +297,7 @@ TEST(linkedhs, contains) {
     EXPECT_EQ(lhs1.contains(s1), false);
 }
 
-TEST(linkedhs, find) {
+TEST(Linkedhs, Find) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -294,7 +310,7 @@ TEST(linkedhs, find) {
     EXPECT_EQ((lhs1.find(s1) == lhs1.begin()), true);
 }
 
-TEST(linkedhs, equalOperator) {
+TEST(Linkedhs, EqualOperator) {
     linkedhs lhs1 = linkedhs();
     linkedhs lhs2 = linkedhs();
 
@@ -315,7 +331,7 @@ TEST(linkedhs, equalOperator) {
     EXPECT_EQ((lhs1 == lhs2), false);
 }
 
-TEST(linkedhs, notEqualOperator) {
+TEST(Linkedhs, NotEqualOperator) {
     linkedhs lhs1 = linkedhs();
     linkedhs lhs2 = linkedhs();
 
@@ -336,7 +352,7 @@ TEST(linkedhs, notEqualOperator) {
     EXPECT_EQ((lhs1 != lhs2), true);
 }
 
-TEST(linkedhs, begin) {
+TEST(Linkedhs, Begin) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -350,7 +366,7 @@ TEST(linkedhs, begin) {
     EXPECT_EQ((lhs1.begin() == linkedhs::iterator(nullptr)), true);
 }
 
-TEST(linkedhs, end) {
+TEST(Linkedhs, End) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -365,7 +381,7 @@ TEST(linkedhs, end) {
     EXPECT_EQ((lhs1.end() == linkedhs::iterator(nullptr)), true);
 }
 
-TEST(linkedhs, clear) {
+TEST(Linkedhs, Clear) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -382,7 +398,7 @@ TEST(linkedhs, clear) {
     EXPECT_EQ(lhs1.empty(), true);
 }
 
-TEST(linkedhs, assignOperatorToItself) {
+TEST(Linkedhs, AssignOperatorToItself) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -397,7 +413,7 @@ TEST(linkedhs, assignOperatorToItself) {
     EXPECT_EQ(lhs1.contains(s1), true);
 }
 
-TEST(copyctor, iterator) {
+TEST(Copyctor, Iterator) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
@@ -420,7 +436,7 @@ TEST(copyctor, iterator) {
     EXPECT_EQ((i1 == i2), true);
 }
 
-TEST(copyctor, linkedhs) {
+TEST(Copyctor, Linkedhs) {
     linkedhs lhs1 = linkedhs();
 
     student s1 = student(18, "Vadim");
