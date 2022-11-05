@@ -129,13 +129,13 @@ TEST(Remove, FirstElementFromNotEmptyBucket) {
 }
 
 TEST(Ctor, Student) {
-    student s1 = student(17, "Bill");
+    student s1(17, "Bill");
     ASSERT_EQ(s1.age_, 17);
     ASSERT_EQ(s1.name_, "Bill");
 }
 
 TEST(Ctor, Linkedhs) {
-    linkedhs lhs1 = linkedhs();
+    linkedhs lhs1;
     ASSERT_EQ(lhs1.size(), 0);
 }
 

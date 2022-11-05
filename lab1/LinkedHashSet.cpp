@@ -65,9 +65,7 @@ bool linkedhs::iterator::operator!=(const iterator& other) const {
 }
 
 // LinkedHashSet
-
-// CR: invoke private ctor with capacity instead
-linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()), numberOfNodes_(0) {}
+linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), numberOfNodes_(0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()) {}
 
 linkedhs::~linkedhs() {
     node* it = firstInserted_;
@@ -80,7 +78,6 @@ linkedhs::~linkedhs() {
     delete[] data_;
 }
 
-// CR: init list
 linkedhs::linkedhs(const linkedhs& other) : size_(0), capacity_(DEFAULT_CAPACITY), numberOfNodes_(0), data_(new node*[capacity_]()), firstInserted_(nullptr), lastInserted_(nullptr) {
     for (element e : other) {
         insert(e);
@@ -111,6 +108,7 @@ bool linkedhs::insert(const element& e) {
     
     while (temp) {
         if (temp->nodeValue_ == e) {
+            delete nodeToInsert;
             return false;
         }
         if (!temp->next_) {
@@ -237,6 +235,7 @@ void linkedhs::rehash() {
     data_ = newData;
     while (temp) {
         insert(temp->nodeValue_);
+        delete temp->prevInserted_;
         temp = temp->nextInserted_;
     }
     delete[] dataToDelete;
