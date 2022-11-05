@@ -81,21 +81,10 @@ linkedhs::~linkedhs() {
 }
 
 // CR: init list
-linkedhs::linkedhs(const linkedhs& other) : capacity_(other.capacity_) {
-
-
-    // size_ = 0;
-    // numberOfNodes_ = 0;
-    // capacity_ = other.capacity_;
-    // // CR: use default capacity
-    // data_ = new node*[capacity_]();
-    // // CR: use iterators
-    // // for (element e : other) ....
-    // node* temp = other.firstInserted_;
-    // while (temp) {
-    //     insert(temp->nodeValue_);
-    //     temp = temp->nextInserted_;
-    // }
+linkedhs::linkedhs(const linkedhs& other) : size_(0), capacity_(DEFAULT_CAPACITY), numberOfNodes_(0), data_(new node*[capacity_]()), firstInserted_(nullptr), lastInserted_(nullptr) {
+    for (element e : other) {
+        insert(e);
+    }
 }
 
 linkedhs& linkedhs::operator=(const linkedhs& other) {
@@ -143,18 +132,16 @@ bool linkedhs::remove(const element& e) {
     if (target == end()) {
         return false;
     }
-
-    if (!target.pointedNode_->prev_ && !target.pointedNode_->next_) {
-        --size_;
-        firstInserted_ = nullptr;
-        lastInserted_ = nullptr;
-        data_[(*target).hash() % capacity_] = nullptr;
+    while (target.pointedNode_) {
+        if (target.pointedNode_->nodeValue_ == e) {
+            redefineRelationsToRemove(target.pointedNode_);
+            delete target.pointedNode_;
+            --numberOfNodes_;
+            return true;
+        }
+        target.pointedNode_ = target.pointedNode_->next_;
     }
-    redefineRelationsToRemove(target.pointedNode_);
-    delete target.pointedNode_;
-
-    --numberOfNodes_;
-    return true;
+    return false;
 }
 
 void linkedhs::swap(linkedhs& other) {
@@ -187,6 +174,7 @@ linkedhs::iterator linkedhs::find(const element& e) const {
         if (tempNode->nodeValue_ == e) {
             return iterator(tempNode);
         }
+        tempNode = tempNode->next_;
     }
     return end();
 }
@@ -259,12 +247,26 @@ double linkedhs::fullnessFactor() const {
 }
 
 void linkedhs::redefineRelationsToRemove(node* node) {
-    if (node->prev_) {
+    if (!node->prev_) {
+        data_[node->nodeValue_.hash() % capacity_] = node->next_;
+        if (!node->next_) {
+            --size_;
+        }
+    }
+    else {
         node->prev_->next_ = node->next_;
     }
     if (node->next_) {
         node->next_->prev_ = node->prev_;
     }
+
+    if (node == firstInserted_) {
+        firstInserted_ = node->nextInserted_;
+    }
+    if (node == lastInserted_) {
+        lastInserted_ = node->prevInserted_;
+    }
+
     if (node->prevInserted_) {
         node->prevInserted_->nextInserted_ = node->nextInserted_;
     }

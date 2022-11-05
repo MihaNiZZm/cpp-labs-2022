@@ -7,7 +7,7 @@ TEST(Insert, InEmpty) {
     linkedhs set;
     student n(14, "n");
     // CR: ASSERT_???
-    ASSERT_EQ(set.insert(n), true);
+    ASSERT_TRUE(set.insert(n));
     ASSERT_EQ(set.size(), 1);
 }
 
@@ -72,10 +72,10 @@ TEST(Insert, SameElement) {
     ASSERT_EQ(lhs.size(), 0);
 
     student n(14, "n");
-    ASSERT_EQ(lhs.insert(n), true);
+    ASSERT_TRUE(lhs.insert(n));
     ASSERT_EQ(lhs.size(), 1);
 
-    ASSERT_EQ(lhs.insert(n), false);
+    ASSERT_FALSE(lhs.insert(n));
     ASSERT_EQ(lhs.size(), 1);
 }
 
@@ -94,16 +94,18 @@ TEST(Insert, Different) {
 
 TEST(Remove, FromEmpty) {
     linkedhs set;
-    EXPECT_EQ(set.remove(student(15, "Vova")), false);
-    EXPECT_EQ(set.size(), 0);
+    ASSERT_FALSE(set.remove(student(15, "Vova")));
+    ASSERT_EQ(set.size(), 0);
 }
 
 TEST(Remove, Exists) {
     linkedhs set;
-    student Vasya(55, "Vasya");
-    set.insert(Vasya);
-    EXPECT_EQ(set.remove(Vasya), true);
-    EXPECT_EQ(set.size(), 0);
+    student s1(15, "Globglobgabgalab");
+
+    ASSERT_TRUE(set.insert(s1));
+    ASSERT_EQ(set.size(), 1);
+    ASSERT_TRUE(set.remove(s1));
+    ASSERT_EQ(set.size(), 0);
 }
 
 TEST(Remove, LastElementFromNotEmptyBucket) {
@@ -112,8 +114,8 @@ TEST(Remove, LastElementFromNotEmptyBucket) {
     student Vasya2(23, "Vasya"); // ---/
     set.insert(Vasya1);
     set.insert(Vasya2);
-    EXPECT_EQ(set.remove(Vasya2), true);
-    EXPECT_EQ(set.size(), 1);
+    ASSERT_TRUE(set.remove(Vasya2));
+    ASSERT_EQ(set.size(), 1);
 }
 
 TEST(Remove, FirstElementFromNotEmptyBucket) {
@@ -122,19 +124,19 @@ TEST(Remove, FirstElementFromNotEmptyBucket) {
     student Vasya2(23, "Vasya"); // ---/
     set.insert(Vasya1);
     set.insert(Vasya2);
-    EXPECT_EQ(set.remove(Vasya1), true);
-    EXPECT_EQ(set.size(), 1);
+    ASSERT_TRUE(set.remove(Vasya1));
+    ASSERT_EQ(set.size(), 1);
 }
 
-TEST(Ctor, StudentWithParams) {
+TEST(Ctor, Student) {
     student s1 = student(17, "Bill");
-    EXPECT_EQ(s1.age_, 17);
-    EXPECT_EQ(s1.name_, "Bill");
+    ASSERT_EQ(s1.age_, 17);
+    ASSERT_EQ(s1.name_, "Bill");
 }
 
 TEST(Ctor, Linkedhs) {
     linkedhs lhs1 = linkedhs();
-    EXPECT_EQ(lhs1.size(), 0);
+    ASSERT_EQ(lhs1.size(), 0);
 }
 
 TEST(Iterator, OperatorDereference) {
@@ -143,7 +145,7 @@ TEST(Iterator, OperatorDereference) {
     lhs1.insert(s1);
     linkedhs::iterator it = lhs1.begin();
 
-    EXPECT_EQ(*it, s1);
+    ASSERT_EQ(*it, s1);
 }
 
 TEST(Iterator, IncrementOperator) {
@@ -155,13 +157,13 @@ TEST(Iterator, IncrementOperator) {
 
     //prefix
     linkedhs::iterator it1 = lhs1.begin();
-    EXPECT_EQ(*(++it1), s2);
-    EXPECT_EQ(*it1, s2);
+    ASSERT_EQ(*(++it1), s2);
+    ASSERT_EQ(*it1, s2);
 
     //postfix
     linkedhs::iterator it2 = lhs1.begin();
-    EXPECT_EQ(*(it2++), s1);
-    EXPECT_EQ(*it2, s2);
+    ASSERT_EQ(*(it2++), s1);
+    ASSERT_EQ(*it2, s2);
 }
 
 TEST(Iterator, DecrementOperator) {
@@ -174,14 +176,14 @@ TEST(Iterator, DecrementOperator) {
     //prefix
     linkedhs::iterator it1 = lhs1.begin();
     ++it1;
-    EXPECT_EQ(*(--it1), s1);
-    EXPECT_EQ(*it1, s1);
+    ASSERT_EQ(*(--it1), s1);
+    ASSERT_EQ(*it1, s1);
 
     //postfix
     linkedhs::iterator it2 = lhs1.begin();
     ++it2;
-    EXPECT_EQ(*(it2--), s2);
-    EXPECT_EQ(*it2, s1);
+    ASSERT_EQ(*(it2--), s2);
+    ASSERT_EQ(*it2, s1);
 }
 
 TEST(Iterator, EqualOperator) {
@@ -194,9 +196,9 @@ TEST(Iterator, EqualOperator) {
     linkedhs::iterator i1 = lhs1.begin();
     linkedhs::iterator i2 = lhs1.begin();
 
-    EXPECT_EQ((i1 == i2), true);
+    ASSERT_TRUE(i1 == i2);
     ++i2;
-    EXPECT_EQ((i1 == i2), false);
+    ASSERT_FALSE(i1 == i2);
 }
 
 TEST(Iterator, NotEqualOperator) {
@@ -209,9 +211,9 @@ TEST(Iterator, NotEqualOperator) {
     linkedhs::iterator i1 = lhs1.begin();
     linkedhs::iterator i2 = lhs1.begin();
 
-    EXPECT_EQ((i1 != i2), false);
+    ASSERT_FALSE(i1 != i2);
     ++i2;
-    EXPECT_EQ((i1 != i2), true);
+    ASSERT_TRUE(i1 != i2);
 }
 
 TEST(Linkedhs, AssignmentOperator) {
@@ -224,12 +226,72 @@ TEST(Linkedhs, AssignmentOperator) {
 
     lhs1.insert(s1);
     lhs2 = lhs1;
-    EXPECT_EQ(lhs1, lhs2);
+    ASSERT_TRUE(lhs1 == lhs2);
     lhs1.insert(s2);
-    EXPECT_EQ((lhs1 == lhs2), false);
+    ASSERT_FALSE(lhs1 == lhs2);
     lhs1.remove(s2);
     lhs2.insert(s3);
-    EXPECT_EQ((lhs1 == lhs2), false);
+    ASSERT_FALSE(lhs1 == lhs2);
+}
+
+TEST(Linkedhs, AssignmentOperatorLargeTest) {
+    linkedhs lhs1 = linkedhs();
+    linkedhs lhs2 = linkedhs();
+
+    student n1(14, "nsdf");
+    student n2(2, "nsdsa");
+    student n3(144, "ngbdf");
+    student n4(112, "nas21");
+    student n5(1412, "ngsd");
+    student n6(13452, "naadsfg");
+    student n7(53414, "ndgfg");
+    student n8(132, "nasdf");
+    student n9(1465, "ngads");
+    student n10(1287, "nasdg");
+    student n11(1004, "nasdbc");
+    student n12(12676, "asdfn");
+    student n13(1804, "asdfgn");
+    student n14(9912, "bvsdfn");
+    student n15(1465, "5ersn");
+    student n16(127, "ngadf");
+
+    ASSERT_TRUE(lhs1.insert(n1));
+    ASSERT_TRUE(lhs2.insert(n1));
+    ASSERT_TRUE(lhs1 == lhs2);
+    ASSERT_TRUE(lhs1.insert(n2));
+    ASSERT_TRUE(lhs1.insert(n3));
+    ASSERT_TRUE(lhs1.insert(n4));
+    ASSERT_TRUE(lhs1.insert(n5));
+    ASSERT_TRUE(lhs1.insert(n6));
+    ASSERT_TRUE(lhs1.insert(n7));
+    ASSERT_TRUE(lhs1.insert(n8));
+    ASSERT_TRUE(lhs1.insert(n9));
+    ASSERT_TRUE(lhs1.insert(n10));
+    ASSERT_TRUE(lhs1.insert(n11));
+    ASSERT_TRUE(lhs1.insert(n12));
+    ASSERT_TRUE(lhs1.insert(n13));
+    ASSERT_TRUE(lhs1.insert(n14));
+    ASSERT_TRUE(lhs1.insert(n15));
+    ASSERT_TRUE(lhs1.insert(n16));
+    ASSERT_FALSE(lhs1 == lhs2);
+    ASSERT_TRUE(lhs1.remove(n2));
+    ASSERT_TRUE(lhs1.remove(n3));
+    ASSERT_TRUE(lhs1.remove(n4));
+    ASSERT_TRUE(lhs1.remove(n5));
+    ASSERT_TRUE(lhs1.remove(n6));
+    ASSERT_TRUE(lhs1.remove(n7));
+    ASSERT_TRUE(lhs1.remove(n8));
+    ASSERT_TRUE(lhs1.remove(n9));
+    ASSERT_TRUE(lhs1.remove(n10));
+    ASSERT_TRUE(lhs1.remove(n11));
+    ASSERT_TRUE(lhs1.remove(n12));
+    ASSERT_TRUE(lhs1.remove(n13));
+    ASSERT_TRUE(lhs1.remove(n14));
+    ASSERT_TRUE(lhs1.remove(n15));
+    ASSERT_TRUE(lhs1.remove(n16));
+    ASSERT_TRUE(lhs1 == lhs2);
+    ASSERT_TRUE(lhs1.remove(n1));
+    ASSERT_FALSE(lhs1 == lhs2);
 }
 
 TEST(Linkedhs, Swap) {
@@ -243,13 +305,19 @@ TEST(Linkedhs, Swap) {
     lhs1.insert(s1);
     lhs2.insert(s3);
 
+    ASSERT_FALSE(lhs1.contains(s3));
+    ASSERT_TRUE(lhs1.contains(s1));
+
+    ASSERT_TRUE(lhs2.contains(s3));
+    ASSERT_FALSE(lhs2.contains(s1));
+
     lhs1.swap(lhs2);
 
-    EXPECT_EQ(lhs1.contains(s1), false);
-    EXPECT_EQ(lhs1.contains(s3), true);
+    ASSERT_FALSE(lhs1.contains(s1));
+    ASSERT_TRUE(lhs1.contains(s3));
 
-    EXPECT_EQ(lhs2.contains(s1), true);
-    EXPECT_EQ(lhs2.contains(s3), false);
+    ASSERT_TRUE(lhs2.contains(s1));
+    ASSERT_FALSE(lhs2.contains(s3));
 }
 
 TEST(Linkedhs, Size) {
@@ -260,13 +328,13 @@ TEST(Linkedhs, Size) {
     student s3 = student(18, "Kolya");
 
     lhs1.insert(s1);
-    EXPECT_EQ(lhs1.size(), 1);
+    ASSERT_EQ(lhs1.size(), 1);
     lhs1.insert(s2);
-    EXPECT_EQ(lhs1.size(), 2);
+    ASSERT_EQ(lhs1.size(), 2);
     lhs1.insert(s3);
-    EXPECT_EQ(lhs1.size(), 3);
+    ASSERT_EQ(lhs1.size(), 3);
     lhs1.remove(s1);
-    EXPECT_EQ(lhs1.size(), 2);
+    ASSERT_EQ(lhs1.size(), 2);
 }
 
 TEST(Linkedhs, Empty) {
@@ -276,11 +344,11 @@ TEST(Linkedhs, Empty) {
     student s2 = student(28, "Artem");
     student s3 = student(18, "Kolya");
 
-    EXPECT_EQ(lhs1.empty(), true);
+    ASSERT_TRUE(lhs1.empty());
     lhs1.insert(s1);
-    EXPECT_EQ(lhs1.empty(), false);
+    ASSERT_FALSE(lhs1.empty());
     lhs1.remove(s1);
-    EXPECT_EQ(lhs1.empty(), true);
+    ASSERT_TRUE(lhs1.empty());
 }
 
 TEST(Linkedhs, Contains) {
@@ -290,11 +358,11 @@ TEST(Linkedhs, Contains) {
     student s2 = student(28, "Artem");
     student s3 = student(18, "Kolya");
 
-    EXPECT_EQ(lhs1.contains(s1), false);
+    ASSERT_FALSE(lhs1.contains(s1));
     lhs1.insert(s1);
-    EXPECT_EQ(lhs1.contains(s1), true);
+    ASSERT_TRUE(lhs1.contains(s1));
     lhs1.remove(s1);
-    EXPECT_EQ(lhs1.contains(s1), false);
+    ASSERT_FALSE(lhs1.contains(s1));
 }
 
 TEST(Linkedhs, Find) {
@@ -304,10 +372,10 @@ TEST(Linkedhs, Find) {
     student s2 = student(28, "Artem");
     student s3 = student(18, "Kolya");
 
-    EXPECT_EQ((lhs1.find(s1) == linkedhs::iterator(nullptr)), true);
+    ASSERT_TRUE(lhs1.find(s1) == linkedhs::iterator(nullptr));
     lhs1.insert(s1);
-    EXPECT_EQ((lhs1.find(s1) == linkedhs::iterator(nullptr)), false);
-    EXPECT_EQ((lhs1.find(s1) == lhs1.begin()), true);
+    ASSERT_FALSE(lhs1.find(s1) == linkedhs::iterator(nullptr));
+    ASSERT_TRUE(lhs1.find(s1) == lhs1.begin());
 }
 
 TEST(Linkedhs, EqualOperator) {
@@ -318,17 +386,17 @@ TEST(Linkedhs, EqualOperator) {
     student s2 = student(28, "Artem");
     student s3 = student(18, "Kolya");
 
-    EXPECT_EQ((lhs1 == lhs2), true);
+    ASSERT_TRUE(lhs1 == lhs2);
     lhs1.insert(s1);
-    EXPECT_EQ((lhs1 == lhs2), false);
+    ASSERT_FALSE(lhs1 == lhs2);
     lhs2.insert(s1);
-    EXPECT_EQ((lhs1 == lhs2), true);
+    ASSERT_TRUE(lhs1 == lhs2);
     lhs2.insert(s2);
-    EXPECT_EQ((lhs1 == lhs2), false);
+    ASSERT_FALSE(lhs1 == lhs2);
     lhs2.remove(s2);
-    EXPECT_EQ((lhs1 == lhs2), true);
+    ASSERT_TRUE(lhs1 == lhs2);
     lhs1.remove(s1);
-    EXPECT_EQ((lhs1 == lhs2), false);
+    ASSERT_FALSE(lhs1 == lhs2);
 }
 
 TEST(Linkedhs, NotEqualOperator) {
@@ -339,17 +407,17 @@ TEST(Linkedhs, NotEqualOperator) {
     student s2 = student(28, "Artem");
     student s3 = student(18, "Kolya");
 
-    EXPECT_EQ((lhs1 != lhs2), false);
+    ASSERT_FALSE(lhs1 != lhs2);
     lhs1.insert(s1);
-    EXPECT_EQ((lhs1 != lhs2), true);
+    ASSERT_TRUE(lhs1 != lhs2);
     lhs2.insert(s1);
-    EXPECT_EQ((lhs1 != lhs2), false);
+    ASSERT_FALSE(lhs1 != lhs2);
     lhs2.insert(s2);
-    EXPECT_EQ((lhs1 != lhs2), true);
+    ASSERT_TRUE(lhs1 != lhs2);
     lhs2.remove(s2);
-    EXPECT_EQ((lhs1 != lhs2), false);
+    ASSERT_FALSE(lhs1 != lhs2);
     lhs1.remove(s1);
-    EXPECT_EQ((lhs1 != lhs2), true);
+    ASSERT_TRUE(lhs1 != lhs2);
 }
 
 TEST(Linkedhs, Begin) {
@@ -359,11 +427,11 @@ TEST(Linkedhs, Begin) {
     student s2 = student(28, "Artem");
     student s3 = student(18, "Kolya");
 
-    EXPECT_EQ((lhs1.begin() == linkedhs::iterator(nullptr)), true);
+    ASSERT_TRUE(lhs1.begin() == linkedhs::iterator(nullptr));
     lhs1.insert(s1);
-    EXPECT_EQ((lhs1.begin() == lhs1.find(s1)), true);
+    ASSERT_TRUE(lhs1.begin() == lhs1.find(s1));
     lhs1.remove(s1);
-    EXPECT_EQ((lhs1.begin() == linkedhs::iterator(nullptr)), true);
+    ASSERT_TRUE(lhs1.begin() == linkedhs::iterator(nullptr));
 }
 
 TEST(Linkedhs, End) {
@@ -373,12 +441,12 @@ TEST(Linkedhs, End) {
     student s2 = student(28, "Artem");
     student s3 = student(18, "Kolya");
 
-    EXPECT_EQ((lhs1.end() == linkedhs::iterator(nullptr)), true);
+    ASSERT_TRUE(lhs1.end() == linkedhs::iterator(nullptr));
     lhs1.insert(s1);
-    EXPECT_EQ((lhs1.end() == lhs1.find(s1)), false);
-    EXPECT_EQ((lhs1.end() == linkedhs::iterator(nullptr)), true);
+    ASSERT_FALSE(lhs1.end() == lhs1.find(s1));
+    ASSERT_TRUE(lhs1.end() == linkedhs::iterator(nullptr));
     lhs1.remove(s1);
-    EXPECT_EQ((lhs1.end() == linkedhs::iterator(nullptr)), true);
+    ASSERT_TRUE(lhs1.end() == linkedhs::iterator(nullptr));
 }
 
 TEST(Linkedhs, Clear) {
@@ -389,13 +457,13 @@ TEST(Linkedhs, Clear) {
     student s3 = student(18, "Kolya");
 
     lhs1.insert(s1);
-    EXPECT_EQ(lhs1.empty(), false);
+    ASSERT_FALSE(lhs1.empty());
     lhs1.insert(s2);
-    EXPECT_EQ(lhs1.empty(), false);
+    ASSERT_FALSE(lhs1.empty());
     lhs1.insert(s3);
-    EXPECT_EQ(lhs1.empty(), false);
+    ASSERT_FALSE(lhs1.empty());
     lhs1.clear();
-    EXPECT_EQ(lhs1.empty(), true);
+    ASSERT_TRUE(lhs1.empty());
 }
 
 TEST(Linkedhs, AssignOperatorToItself) {
@@ -406,11 +474,11 @@ TEST(Linkedhs, AssignOperatorToItself) {
     student s3 = student(18, "Kolya");
 
     lhs1 = lhs1;
-    EXPECT_EQ(lhs1.empty(), true);
+    ASSERT_TRUE(lhs1.empty());
     lhs1.insert(s1);
     lhs1 = lhs1;
-    EXPECT_EQ(lhs1.empty(), false);
-    EXPECT_EQ(lhs1.contains(s1), true);
+    ASSERT_FALSE(lhs1.empty());
+    ASSERT_TRUE(lhs1.contains(s1));
 }
 
 TEST(Copyctor, Iterator) {
@@ -425,15 +493,15 @@ TEST(Copyctor, Iterator) {
     lhs1.insert(s3);
     linkedhs::iterator i1 = lhs1.begin();
     linkedhs::iterator i2(i1);
-    EXPECT_EQ((i1 == i2), true);
+    ASSERT_TRUE(i1 == i2);
     i2++;
-    EXPECT_EQ((i1 == i2), false);
+    ASSERT_FALSE(i1 == i2);
     i1++;
-    EXPECT_EQ((i1 == i2), true);
+    ASSERT_TRUE(i1 == i2);
     i2--;
-    EXPECT_EQ((i1 == i2), false);
+    ASSERT_FALSE(i1 == i2);
     i1--;
-    EXPECT_EQ((i1 == i2), true);
+    ASSERT_TRUE(i1 == i2);
 }
 
 TEST(Copyctor, Linkedhs) {
@@ -445,13 +513,13 @@ TEST(Copyctor, Linkedhs) {
 
     lhs1.insert(s1);
     linkedhs lhs2(lhs1);
-    EXPECT_EQ((lhs1 == lhs2), true);
+    ASSERT_TRUE(lhs1 == lhs2);
     lhs1.insert(s2);
-    EXPECT_EQ((lhs1 == lhs2), false);
+    ASSERT_FALSE(lhs1 == lhs2);
     lhs1.remove(s2);
-    EXPECT_EQ((lhs1 == lhs2), true);
+    ASSERT_TRUE(lhs1 == lhs2);
     lhs2.insert(s2);
-    EXPECT_EQ((lhs1 == lhs2), false);
+    ASSERT_FALSE(lhs1 == lhs2);
     lhs2.remove(s2);
-    EXPECT_EQ((lhs1 == lhs2), true);
+    ASSERT_TRUE(lhs1 == lhs2);
 }
