@@ -4,6 +4,8 @@
 using namespace LinkedHashSet;
 
 int main(int argc, char** argv) {
-	linkedhs set1;
+	std::cout << sizeof(node) << std::endl;
+	std::cout << sizeof(linkedhs) << std::endl;
+	std::cout << sizeof(student) << std::endl;
 	return 0;
 }

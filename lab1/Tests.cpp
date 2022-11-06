@@ -64,7 +64,7 @@ TEST(Insert, Many) {
     ASSERT_EQ(set.size(), 15);
     ASSERT_TRUE(set.insert(n16));
     ASSERT_EQ(set.size(), 16);
-}   
+}
 
 // CR: test for insert same element
 TEST(Insert, SameElement) {

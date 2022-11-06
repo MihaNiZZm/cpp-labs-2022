@@ -181,7 +181,6 @@ bool linkedhs::operator==(const linkedhs& other) const {
     if (size() != other.size()) {
       return false;
     }
-    // CR: order does not matter, capacity can differ
     for (element e : *this) {
         if (!other.contains(e)) {
             return false;
@@ -225,18 +224,18 @@ void linkedhs::clear() {
 void linkedhs::rehash() {
     node** dataToDelete = data_;
     capacity_ *= 2;
-    node** newData = new node*[capacity_]();
-    // CR: firstInserted_ = nullptr, ...
     node* temp = firstInserted_;
+    node* tempPrev = nullptr;
+    data_ = new node*[capacity_]();
     firstInserted_ = nullptr;
     lastInserted_ = nullptr;
     size_ = 0;
     numberOfNodes_ = 0;
-    data_ = newData;
     while (temp) {
         insert(temp->nodeValue_);
-        delete temp->prevInserted_;
+        tempPrev = temp;
         temp = temp->nextInserted_;
+        delete tempPrev;
     }
     delete[] dataToDelete;
 }
