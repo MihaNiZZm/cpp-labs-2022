@@ -464,6 +464,9 @@ TEST(Linkedhs, Clear) {
     ASSERT_FALSE(lhs1.empty());
     lhs1.clear();
     ASSERT_TRUE(lhs1.empty());
+    ASSERT_EQ(lhs1.find(s1), lhs1.end());
+    ASSERT_EQ(lhs1.find(s2), lhs1.end());
+    ASSERT_EQ(lhs1.find(s3), lhs1.end());
 }
 
 TEST(Linkedhs, AssignOperatorToItself) {

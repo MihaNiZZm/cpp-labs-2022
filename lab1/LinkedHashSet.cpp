@@ -33,7 +33,6 @@ node::node(element data) : prevInserted_(nullptr), nextInserted_(nullptr), prev_
 
 // iterator
 
-// CR: explicit
 linkedhs::iterator::iterator(node* node) : pointedNode_(node) {}
 
 element linkedhs::iterator::operator*() {
@@ -212,7 +211,6 @@ void linkedhs::clear() {
             it = it->next_;
             delete prev;
         }
-        // CR: write test
         data_[i] = nullptr;
     }
     size_ = 0;
