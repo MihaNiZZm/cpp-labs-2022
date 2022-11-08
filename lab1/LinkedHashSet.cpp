@@ -10,7 +10,7 @@ using namespace LinkedHashSet;
 student::student(unsigned age, std::string name) : age_(age), name_(name) {}
 
 bool student::operator==(const student& other) const {
-    return (age_ == other.age_ && name_ == other.name_);
+    return age_ == other.age_ && name_ == other.name_;
 }
 bool student::operator!=(const student& other) const {
     return !(*this == other);
@@ -64,9 +64,12 @@ bool linkedhs::iterator::operator!=(const iterator& other) const {
 }
 
 // LinkedHashSet
+
+// CR: reorder init list according to fields declarations order in header
 linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), numberOfNodes_(0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()) {}
 
 linkedhs::~linkedhs() {
+  // CR: reuse clear
     node* it = firstInserted_;
     node* temp = nullptr;
     while (it) {
@@ -97,6 +100,7 @@ linkedhs& linkedhs::operator=(const linkedhs& other) {
 }
 
 bool linkedhs::insert(const element& e) {
+  // CR: 0.75 -- static constexpr double field in header
     if (fullnessFactor() >= 0.75) {
         rehash();
     }
@@ -107,6 +111,7 @@ bool linkedhs::insert(const element& e) {
     
     while (temp) {
         if (temp->nodeValue_ == e) {
+            // CR: do not create node beforehand
             delete nodeToInsert;
             return false;
         }
@@ -117,8 +122,9 @@ bool linkedhs::insert(const element& e) {
         }
         temp = temp->next_;
     }
-    ++size_;
     data_[idx] = nodeToInsert;
+    // CR: move to addNode
+    ++size_;
     redefineRelationsToInsert(temp, nodeToInsert);
     ++numberOfNodes_;
     return true;
@@ -133,6 +139,7 @@ bool linkedhs::remove(const element& e) {
         if (target.pointedNode_->nodeValue_ == e) {
             redefineRelationsToRemove(target.pointedNode_);
             delete target.pointedNode_;
+            // CR: move to redefineRelationsToRemove
             --numberOfNodes_;
             return true;
         }
@@ -180,6 +187,7 @@ bool linkedhs::operator==(const linkedhs& other) const {
     if (size() != other.size()) {
       return false;
     }
+    // CR: std::any_of
     for (element e : *this) {
         if (!other.contains(e)) {
             return false;
@@ -201,6 +209,7 @@ linkedhs::iterator linkedhs::end() const {
 
 void linkedhs::clear() {
     for (int i = 0; i < capacity_; ++i) {
+        // CR: optimize using size_
         if (!data_[i]) {
             continue;
         }
@@ -220,6 +229,7 @@ void linkedhs::clear() {
 }
 
 void linkedhs::rehash() {
+    // CR: linkedhs tmp(), swap
     node** dataToDelete = data_;
     capacity_ *= 2;
     node* temp = firstInserted_;
@@ -239,10 +249,32 @@ void linkedhs::rehash() {
 }
 
 double linkedhs::fullnessFactor() const {
+  // CR: remove one double cast?
     return double(size_) / double(capacity_);
 }
 
 void linkedhs::redefineRelationsToRemove(node* node) {
+  // assert(node != nullptr);
+  // if (node == firstInserted_) {
+  //   firstInserted_ = firstInserted_->nextInserted_;
+  // }
+  // if (node == lastInserted_) {
+  //   lastInserted_ = lastInserted_->prevInserted_;
+  // }
+  // if (node->prev_) {
+  //   node->prev_->next_ = node->next_;
+  // }
+  // if (node->next_) {
+  //   node->next_->prev_ = node->prev_;
+  // }
+  // if (node->prevInserted_) {
+  //   node->prevInserted_->nextInserted_ = node->nextInserted_;
+  // }
+  // if (node->nextInserted_) {
+  //   node->nextInserted_->prevInserted_ = node->prevInserted_;
+  // }
+
+
     if (!node->prev_) {
         data_[node->nodeValue_.hash() % capacity_] = node->next_;
         if (!node->next_) {
@@ -272,6 +304,7 @@ void linkedhs::redefineRelationsToRemove(node* node) {
 }
 
 void linkedhs::redefineRelationsToInsert(node* prevNode, node* nodeToInsert) {
+    // CR: new node(prevInserted, nextInsterted....)?
     if (prevNode) {
         prevNode->next_ = nodeToInsert;
         nodeToInsert->prev_ = prevNode;

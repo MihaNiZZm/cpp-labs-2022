@@ -148,6 +148,7 @@ namespace LinkedHashSet {
         static const int DEFAULT_CAPACITY = 8;
 
         int numberOfNodes_;
+        // CR: rename?
         int size_;
         int capacity_;
         
