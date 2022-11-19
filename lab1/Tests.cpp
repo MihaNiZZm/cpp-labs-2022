@@ -102,6 +102,17 @@ TEST(Insert, Many) {
     ASSERT_EQ(set.size(), 16);
 }
 
+TEST(Insert, OneMillion) {
+    srand(time(NULL));
+    linkedhs set;
+
+    for (int i = 0; i < 1000000; ++i) {
+        set.insert(student(rand(), std::to_string(rand())));
+    }
+
+    ASSERT_EQ(set.size(), 1000000);
+}
+
 TEST(Insert, ManyAfterClear) {
     linkedhs set;
     student n1(14, "nsdf");

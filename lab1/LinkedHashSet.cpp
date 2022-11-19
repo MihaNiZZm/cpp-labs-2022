@@ -30,6 +30,7 @@ long long student::hash() const {
 // node
 
 node::node(element data) : prevInserted_(nullptr), nextInserted_(nullptr), prev_(nullptr), next_(nullptr), nodeValue_(data) {}
+node::node(node* prevInserted, node* nextInserted, element data): prevInserted_(prevInserted), nextInserted_(nextInserted), nodeValue_(data) {}
 
 // iterator
 
@@ -66,21 +67,16 @@ bool linkedhs::iterator::operator!=(const iterator& other) const {
 // LinkedHashSet
 
 // CR: reorder init list according to fields declarations order in header
-linkedhs::linkedhs() : size_(0), capacity_(DEFAULT_CAPACITY), numberOfNodes_(0), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()) {}
+linkedhs::linkedhs() : size_(0), numberOfBuckets_(0), capacity_(DEFAULT_CAPACITY), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[DEFAULT_CAPACITY]()) {}
+linkedhs::linkedhs(size_t capacity): size_(0), numberOfBuckets_(0), capacity_(capacity), firstInserted_(nullptr), lastInserted_(nullptr), data_(new node*[capacity]()) {}
 
 linkedhs::~linkedhs() {
   // CR: reuse clear
-    node* it = firstInserted_;
-    node* temp = nullptr;
-    while (it) {
-        temp = it;
-        it = it->nextInserted_;
-        delete temp;
-    }
+    clear();
     delete[] data_;
 }
 
-linkedhs::linkedhs(const linkedhs& other) : size_(0), capacity_(DEFAULT_CAPACITY), numberOfNodes_(0), data_(new node*[capacity_]()), firstInserted_(nullptr), lastInserted_(nullptr) {
+linkedhs::linkedhs(const linkedhs& other) : linkedhs() {
     for (element e : other) {
         insert(e);
     }
@@ -101,7 +97,7 @@ linkedhs& linkedhs::operator=(const linkedhs& other) {
 
 bool linkedhs::insert(const element& e) {
   // CR: 0.75 -- static constexpr double field in header
-    if (fullnessFactor() >= 0.75) {
+    if (fullnessFactor() >= REHASH_THRESHOLD) {
         rehash();
     }
 
@@ -117,16 +113,16 @@ bool linkedhs::insert(const element& e) {
         }
         if (!temp->next_) {
             redefineRelationsToInsert(temp, nodeToInsert);
-            ++numberOfNodes_;
+            ++size_;
             return true;
         }
         temp = temp->next_;
     }
     data_[idx] = nodeToInsert;
     // CR: move to addNode
-    ++size_;
+    ++numberOfBuckets_;
     redefineRelationsToInsert(temp, nodeToInsert);
-    ++numberOfNodes_;
+    ++size_;
     return true;
 }
 
@@ -136,11 +132,11 @@ bool linkedhs::remove(const element& e) {
         return false;
     }
     while (target.pointedNode_) {
-        if (target.pointedNode_->nodeValue_ == e) {
+        if (*target == e) {
             redefineRelationsToRemove(target.pointedNode_);
             delete target.pointedNode_;
             // CR: move to redefineRelationsToRemove
-            --numberOfNodes_;
+            --size_;
             return true;
         }
         target.pointedNode_ = target.pointedNode_->next_;
@@ -150,6 +146,7 @@ bool linkedhs::remove(const element& e) {
 
 void linkedhs::swap(linkedhs& other) {
     std::swap(data_, other.data_);
+    std::swap(numberOfBuckets_, other.numberOfBuckets_);
     std::swap(size_, other.size_);
     std::swap(capacity_, other.capacity_);
     std::swap(firstInserted_, other.firstInserted_);
@@ -157,7 +154,7 @@ void linkedhs::swap(linkedhs& other) {
 }
 
 size_t linkedhs::size() const {
-    return numberOfNodes_;
+    return size_;
 }
 
 bool linkedhs::empty() const {
@@ -188,6 +185,8 @@ bool linkedhs::operator==(const linkedhs& other) const {
       return false;
     }
     // CR: std::any_of
+    // return !std::any_of(begin(), end(), [other](element e) { return !other.contains(e); });
+
     for (element e : *this) {
         if (!other.contains(e)) {
             return false;
@@ -209,7 +208,10 @@ linkedhs::iterator linkedhs::end() const {
 
 void linkedhs::clear() {
     for (int i = 0; i < capacity_; ++i) {
-        // CR: optimize using size_
+        // CR: optimize using numberOfBuckets_
+        if (numberOfBuckets_ == 0) {
+            break;
+        }
         if (!data_[i]) {
             continue;
         }
@@ -221,36 +223,25 @@ void linkedhs::clear() {
             delete prev;
         }
         data_[i] = nullptr;
+        --numberOfBuckets_;
     }
     size_ = 0;
-    numberOfNodes_ = 0;
     lastInserted_ = nullptr;
     firstInserted_ = nullptr;
 }
 
 void linkedhs::rehash() {
     // CR: linkedhs tmp(), swap
-    node** dataToDelete = data_;
-    capacity_ *= 2;
-    node* temp = firstInserted_;
-    node* tempPrev = nullptr;
-    data_ = new node*[capacity_]();
-    firstInserted_ = nullptr;
-    lastInserted_ = nullptr;
-    size_ = 0;
-    numberOfNodes_ = 0;
-    while (temp) {
-        insert(temp->nodeValue_);
-        tempPrev = temp;
-        temp = temp->nextInserted_;
-        delete tempPrev;
+    linkedhs temp(capacity_ * 2);
+    for (element e: *this) {
+        temp.insert(e);
     }
-    delete[] dataToDelete;
+    swap(temp);
 }
 
 double linkedhs::fullnessFactor() const {
   // CR: remove one double cast?
-    return double(size_) / double(capacity_);
+    return double(numberOfBuckets_) / capacity_;
 }
 
 void linkedhs::redefineRelationsToRemove(node* node) {
@@ -278,7 +269,7 @@ void linkedhs::redefineRelationsToRemove(node* node) {
     if (!node->prev_) {
         data_[node->nodeValue_.hash() % capacity_] = node->next_;
         if (!node->next_) {
-            --size_;
+            --numberOfBuckets_;
         }
     }
     else {
@@ -303,6 +294,10 @@ void linkedhs::redefineRelationsToRemove(node* node) {
     }
 }
 
+void linkedhs::removeNode(node* node) {
+
+}
+
 void linkedhs::redefineRelationsToInsert(node* prevNode, node* nodeToInsert) {
     // CR: new node(prevInserted, nextInsterted....)?
     if (prevNode) {
@@ -317,4 +312,8 @@ void linkedhs::redefineRelationsToInsert(node* prevNode, node* nodeToInsert) {
         nodeToInsert->prevInserted_ = lastInserted_;
     }
     lastInserted_ = nodeToInsert;
+}
+
+void linkedhs::addNode(node* prevNode, node* nodeToInsert) {
+
 }

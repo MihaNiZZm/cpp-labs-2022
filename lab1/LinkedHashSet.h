@@ -33,6 +33,7 @@ namespace LinkedHashSet {
     private:
         node();
         node(element data);
+        node(node* prevInserted, node* nextInserted, element data);
 
         node* prevInserted_;
         node* nextInserted_;
@@ -139,17 +140,21 @@ namespace LinkedHashSet {
         void clear();
 
     private:
+        linkedhs(size_t capacity); 
         void rehash();
         double fullnessFactor() const;
         void redefineRelationsToRemove(node* node);
         void redefineRelationsToInsert(node* prevNode, node* nodeToInsert);
+        void removeNode(node* node);
+        void addNode(node* prevNode, node* nodeToInsert);
 
         static const int RESIZE_FACTOR = 2;
         static const int DEFAULT_CAPACITY = 8;
+        static constexpr double REHASH_THRESHOLD = 0.75;
 
-        int numberOfNodes_;
-        // CR: rename?
         int size_;
+        // CR: rename?
+        int numberOfBuckets_;
         int capacity_;
         
         node* firstInserted_;
