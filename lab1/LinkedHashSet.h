@@ -146,7 +146,7 @@ namespace LinkedHashSet {
         void redefineRelationsToRemove(node* node);
         void redefineRelationsToInsert(node* prevNode, node* nodeToInsert);
         void removeNode(node* node);
-        void addNode(node* prevNode, node* nodeToInsert);
+        void addNode(node* prevNode, element e, int idx);
 
         static const int RESIZE_FACTOR = 2;
         static const int DEFAULT_CAPACITY = 8;
