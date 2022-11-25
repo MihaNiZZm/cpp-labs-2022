@@ -23,7 +23,6 @@ namespace LinkedHashSet {
         friend struct node;
         friend class linkedhs;
 
-        // Returns hash-value of the student.
         long long hash() const;
     };
 
@@ -44,40 +43,30 @@ namespace LinkedHashSet {
         friend class linkedhs;
     };
     
-    // class MyStudentHasher {
-    //   public:
-    //     long long operator()(student & student) {
-
-    //     }
-    // };
-    // MyStudentHasher()(s1)
-    // Hasher()(e);
-    // lhs<int>
-    //template<typename T, typename Hasher = std::hash<T>>
     class linkedhs {
     public:
         class iterator {
         public:
-            // Creates iterator with values copied from other iterator.
+            // Returns independent copy of other iterator.
             iterator(const iterator& other) = default;
-            // Creates iterator with given pointed node.
+            // Returns new iterator with given pointed node.
             explicit iterator(node* node);
   
-            // Returns student type value of the node iterator contains.
+            // Returns student, that this iterator contains.
             element operator*();
-            // Returns same value of iterator and updates this iterator: it will contain next inserted node.
+            // Returns same iterator and then increments it.
             iterator operator++(int);
-            // Updates this iterator: it will contain next inserted node and returns updated operator.
+            // Increments this iterator and then returns it.
             iterator& operator++();
-            // Returns same value of iterator and updates this iterator: it will contain previous inserted node.
+            // Returns same iterator and then decrements it.
             iterator operator--(int);
-            // Updates this iterator: it will contain previous inserted node and returns updated operator.
+            // Decrements this iterator and then returns it.
             iterator& operator--();
-            // Returns true if two iterators contain the same node and the same set,
+            // Returns true, if this and other iterators contain the same node,
             // else returns false.
             bool operator==(const iterator& other) const;
-            // Returns false if two iterators contain the same node and the same set,
-            // else returns true.
+            // Returns true, if this and other iterators contain different nodes,
+            // else returns false.
             bool operator!=(const iterator& other) const;
 
         private:
@@ -89,52 +78,52 @@ namespace LinkedHashSet {
         
         ~linkedhs();
         
-        // Creates linkedhashset with values of other linkedhashset.
+        // Creates independent copy of other linkedhashset.
         linkedhs(const linkedhs& other);
-        // Changes this linkedhashset values to other linkedhashset values.
+        // Copies values of other linkedhashset to this linkedhashset. Linkedhashsets are still being independent.
         linkedhs& operator=(const linkedhs& other);
         
-        /// Inserts given element in the linkedhashset.
-        /// Returns true if the element was inserted successfully,
-        /// else returns false.
+        // Inserts given student in this linkedhashset.
+        // Returns true, if there is no the same student in the set,
+        // else returns false.
         bool insert(const element& e);
-        // Removes given element from the linkedhashset.
-        // Returns true if the element was deleted succesfully,
+        // Removes given student from this linkedhashset.
+        // Returns true if given student was found,
         // else returns false.
         bool remove(const element& e);
         
-        // Swaps all fields' vaules of two linkedhashsets.
+        // Swaps all fields of this linkedhashset and other linkedhashset.
         void swap(linkedhs& other);
         
-        // Returns number of nodes.
+        // Returns number of elements in this linkedhashset.
         size_t size() const;
         
         // Returns true if this linkedhashset has no elements,
         // else returns false.
         bool empty() const;
         
-        // Returns true if the element 'e' exists in this linkedhashset,
+        // Returns true if the given element exists in this linkedhashset,
         // else returns false.
         bool contains(const element& e) const;
-        // If element 'e' was found in this linkedhashset,
-        // returns iterator that contains node with value = 'e',
+        // If the given element was found in this linkedhashset,
+        // returns iterator of that element,
         // else returns end-iterator.
         iterator find(const element& e) const;
         
-        // Returns true if this linkedhashset contains same nodes as other linkedhashset (insertion order doesn't matter),
+        // Returns true, if this and other linkedhashsets have the same elements,
         // else returns false.
         bool operator==(const linkedhs& other) const;
-        // Returns false if this linkedhashset contains same nodes as other linkedhashset (insertion order doesn't matter),
+        // Returns false, if this and other linkedhashsets have the same elements,
         // else returns true.
         bool operator!=(const linkedhs& other) const;
         
-        // Returns iterator that contains node that was inserted first in this linkedhashset.
-        // If this linkedhashset is empty, returns iterator that contains nullptr node.
+        // Returns iterator that contains first added element.
+        // If this linkedhashset is empty, returns end-iterator. 
         iterator begin() const;
-        // Returns iterator that contains nullptr.
+        // Returns end-iterator. This iterator contains nullptr.
         iterator end() const;
         
-        // Deletes all nodes of this linkedhashset, sets size to 0.
+        // Deletes all elements of this linkedhashset and sets size to 0.
         void clear();
 
     private:
