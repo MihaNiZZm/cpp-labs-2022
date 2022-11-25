@@ -85,10 +85,8 @@ namespace LinkedHashSet {
             friend class linkedhs;
         };
     
-        // Creates empty linkedhashset with capacity = 32.
         linkedhs();
         
-        // Deletes all linkedhashset data.
         ~linkedhs();
         
         // Creates linkedhashset with values of other linkedhashset.
@@ -153,7 +151,6 @@ namespace LinkedHashSet {
         static constexpr double REHASH_THRESHOLD = 0.75;
 
         int size_;
-        // CR: rename?
         int numberOfBuckets_;
         int capacity_;
         
