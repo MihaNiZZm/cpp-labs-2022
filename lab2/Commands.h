@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <stack>
 
@@ -16,7 +18,7 @@ class Multiply: public Command {
         numStack.pop();
         numStack.push(res);
     }
-    ~Multiply() {
+    ~Multiply() override {
 
     }
 };
@@ -30,7 +32,7 @@ class Add: public Command {
         numStack.pop();
         numStack.push(res);
     }
-    ~Add() {
+    ~Add() override {
 
     }
 };
@@ -44,7 +46,7 @@ class Divide: public Command {
         numStack.pop();
         numStack.push(divident / divider);
     }
-    ~Divide() {
+    ~Divide() override {
 
     }
 };
@@ -58,7 +60,7 @@ class Subtract: public Command {
         numStack.pop();
         numStack.push(reduced - deductible);
     }
-    ~Subtract() {
+    ~Subtract() override {
 
     }
 };
@@ -72,40 +74,44 @@ class Mod: public Command {
         numStack.pop();
         numStack.push(divident % divider);
     }
-    ~Mod() {
+    ~Mod() override {
 
     }
 };
 
 class Dup: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         numStack.push(numStack.top());
     }
-    ~Dup() {
+    ~Dup() override {
 
     }
 };
 
 class Drop: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         numStack.pop();
     }
-    ~Drop() {
+    ~Drop() override {
         
     }
 };
 
 class Write: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         std::cout << numStack.top() << std::endl;
         numStack.pop();
     }
-    ~Write() {
+    ~Write() override {
         
     }
 };
 
 class Swap: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         int num1, num2;
         num1 = numStack.top();
@@ -116,12 +122,13 @@ class Swap: public Command {
         numStack.push(num1);
         numStack.push(num2);
     }
-    ~Swap() {
+    ~Swap() override {
         
     }
 };
 
 class Rotate: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         int num1, num2, num3;
         num1 = numStack.top();
@@ -135,12 +142,13 @@ class Rotate: public Command {
         numStack.push(num3);
         numStack.push(num2);
     }
-    ~Rotate() {
+    ~Rotate() override {
         
     }
 };
 
 class CopySecond: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         int num1, num2;
         num1 = numStack.top();
@@ -150,31 +158,34 @@ class CopySecond: public Command {
         numStack.push(num1);
         numStack.push(num2);
     }
-    ~CopySecond() {
+    ~CopySecond() override {
         
     }
 };
 
 class WriteAsAscii: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         std::cout << char(numStack.top()) << std::endl;
         numStack.pop();
     }
-    ~WriteAsAscii() {
+    ~WriteAsAscii() override {
         
     }
 };
 
 class LineBreak: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         std::cout << std::endl;
     }
-    ~LineBreak() {
+    ~LineBreak() override {
         
     }
 };
 
 class More: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         int left, right;
         right = numStack.top();
@@ -189,12 +200,13 @@ class More: public Command {
             numStack.push(0);
         }
     }
-    ~More() {
+    ~More() override {
         
     }
 };
 
 class Less: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         int left, right;
         right = numStack.top();
@@ -209,12 +221,13 @@ class Less: public Command {
             numStack.push(0);
         }
     }
-    ~Less() {
+    ~Less() override {
         
     }
 };
 
 class Equal: public Command {
+  public:
     void apply(std::stack<int>& numStack) override {
         int left, right;
         right = numStack.top();
@@ -229,16 +242,21 @@ class Equal: public Command {
             numStack.push(0);
         }
     }
-    ~Equal() {
+    ~Equal() override {
         
     }
 };
 
 class WriteString: public Command {
+  public:
+    WriteString(const std::string string) : stringToWrite_(string) {}
+
     void apply(std::stack<int>& numStack) override {
         //TODO: body
     }
-    ~WriteString() {
+    ~WriteString() override {
         
     }
+  private:
+    std::string stringToWrite_;
 };
