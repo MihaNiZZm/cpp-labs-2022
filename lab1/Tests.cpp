@@ -106,8 +106,6 @@ TEST(Insert, OneMillion) {
     srand(time(NULL));
     linkedhs set;
 
-    static student* students;
-
     for (int i = 0; i < 1000000; ++i) {
         set.insert(student(rand(), std::to_string(rand())));
     }

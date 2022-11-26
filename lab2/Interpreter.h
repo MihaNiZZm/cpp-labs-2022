@@ -6,6 +6,7 @@
 #include <functional>
 #include <list>
 #include <cctype>
+#include <algorithm>
 
 #include "Commands.h"
 
@@ -54,7 +55,6 @@ class Interpreter {
     }
 
   private:
-
     Interpreter() = default;
     Interpreter(const Interpreter& other) = delete;
     Interpreter& operator=(const Interpreter& other) = delete;
