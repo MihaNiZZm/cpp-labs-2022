@@ -90,17 +90,4 @@ namespace {
         return new WriteString(body);
     }
     bool writeStringCommand = Interpreter::getInstance().registerCreator(".\"", writeStringCreator);
-
-    Command* putNumberOnStack(std::string::iterator& it, const std::string::iterator& end) {
-        std::string number = "";
-        while (*it != ' ' && it != end) {
-            if (!isdigit(*it)) {
-                // TODO: throw "unknown command" error.
-            }
-            number += *it;
-            ++it;
-        }
-        return new PutNumberOnStack(stoi(number));
-    }
-    bool putNumberOnStackCommand = Interpreter::getInstance().registerCreator("", putNumberOnStack);
 }

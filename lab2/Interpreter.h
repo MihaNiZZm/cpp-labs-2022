@@ -10,6 +10,7 @@
 
 #include "Commands.h"
 #include "InterpreterError.h"
+#include "Parser.h"
 
 class Interpreter {
   public:
@@ -29,25 +30,15 @@ class Interpreter {
       std::list<std::string> strCommands;
       std::list<Command*> commands;
       std::string newCommand = "";
-      for (auto it = begin; it < end; ++it) {
-        newCommand += *it;
-        if (isspace(*it)) {
-          strCommands.push_back(newCommand);
-          newCommand = "";
-        }
-      }
+      
+      getWords(strCommands, begin, end);
 
       for (std::string cmd : strCommands) {
-        auto creatorIt = creators_.find(cmd);
-        if (isdigit(cmd[0])) {
-          for (char c : cmd) {
-            if (!isdigit(c)) {
-              // TODO: throw error "unknown command"
-              break;
-            }
-          }
+        if (isNumber(cmd)) {
           numStack_.push(stoi(cmd));
+          // TODO: throw error if number doesn't fit into int type range.
         }
+        auto creatorIt = creators_.find(cmd);
         if (creatorIt == creators_.end()) {
           // TODO: throw error "unknown command"
         }

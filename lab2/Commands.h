@@ -261,16 +261,3 @@ class WriteString: public Command {
     std::string stringToWrite_;
 };
 
-class PutNumberOnStack: public Command {
-  public:
-    PutNumberOnStack(int number): number_(number) {}
-
-    void apply(std::stack<int>& numStack) override {
-      numStack.push(number_);
-    }
-    ~PutNumberOnStack() override {
-        
-    }
-  private:
-    int number_;
-};

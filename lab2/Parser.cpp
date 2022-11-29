@@ -18,6 +18,7 @@ bool isNumber(std::string word) {
     if (!isdigit(*it) && *it != '-') {
         return false;
     }
+    ++it;
     while (it != word.end()) {
         if (!isdigit(*it)) {
             return false;
