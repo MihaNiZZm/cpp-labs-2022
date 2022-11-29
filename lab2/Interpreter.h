@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "Commands.h"
+#include "InterpreterError.h"
 
 class Interpreter {
   public:
@@ -45,7 +46,7 @@ class Interpreter {
               break;
             }
           }
-          numStack_.push(atoi(cmd.c_str()));
+          numStack_.push(stoi(cmd));
         }
         if (creatorIt == creators_.end()) {
           // TODO: throw error "unknown command"
