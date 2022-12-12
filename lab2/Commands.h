@@ -4,13 +4,13 @@
 #include <stack>
 
 class Command {
-  public:
+public:
     virtual void apply(std::stack<int>& numStack) = 0;
     virtual ~Command() = 0;
 };
 
 class Multiply: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int res = numStack.top();
         numStack.pop();
@@ -24,7 +24,7 @@ class Multiply: public Command {
 };
 
 class Add: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int res = numStack.top();
         numStack.pop();
@@ -38,7 +38,7 @@ class Add: public Command {
 };
 
 class Divide: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int divider = numStack.top();
         numStack.pop();
@@ -52,7 +52,7 @@ class Divide: public Command {
 };
 
 class Subtract: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int deductible = numStack.top();
         numStack.pop();
@@ -66,7 +66,7 @@ class Subtract: public Command {
 };
 
 class Mod: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int divider = numStack.top();
         numStack.pop();
@@ -80,7 +80,7 @@ class Mod: public Command {
 };
 
 class Dup: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         numStack.push(numStack.top());
     }
@@ -90,7 +90,7 @@ class Dup: public Command {
 };
 
 class Drop: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         numStack.pop();
     }
@@ -100,7 +100,7 @@ class Drop: public Command {
 };
 
 class Write: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         std::cout << numStack.top() << std::endl;
         numStack.pop();
@@ -111,7 +111,7 @@ class Write: public Command {
 };
 
 class Swap: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int num1, num2;
         num1 = numStack.top();
@@ -128,7 +128,7 @@ class Swap: public Command {
 };
 
 class Rotate: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int num1, num2, num3;
         num1 = numStack.top();
@@ -148,7 +148,7 @@ class Rotate: public Command {
 };
 
 class CopySecond: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int num1, num2;
         num1 = numStack.top();
@@ -164,7 +164,7 @@ class CopySecond: public Command {
 };
 
 class WriteAsAscii: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         std::cout << char(numStack.top()) << std::endl;
         numStack.pop();
@@ -175,7 +175,7 @@ class WriteAsAscii: public Command {
 };
 
 class LineBreak: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         std::cout << std::endl;
     }
@@ -185,7 +185,7 @@ class LineBreak: public Command {
 };
 
 class More: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int left, right;
         right = numStack.top();
@@ -206,7 +206,7 @@ class More: public Command {
 };
 
 class Less: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int left, right;
         right = numStack.top();
@@ -227,7 +227,7 @@ class Less: public Command {
 };
 
 class Equal: public Command {
-  public:
+public:
     void apply(std::stack<int>& numStack) override {
         int left, right;
         right = numStack.top();
@@ -243,12 +243,12 @@ class Equal: public Command {
         }
     }
     ~Equal() override {
-        
+    
     }
 };
 
 class WriteString: public Command {
-  public:
+public:
     WriteString(const std::string string) : stringToWrite_(string) {}
 
     void apply(std::stack<int>& numStack) override {
@@ -257,7 +257,7 @@ class WriteString: public Command {
     ~WriteString() override {
         
     }
-  private:
+private:
     std::string stringToWrite_;
 };
 

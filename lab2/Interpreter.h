@@ -11,6 +11,7 @@
 #include "Commands.h"
 #include "InterpreterError.h"
 #include "Parser.h"
+#include "Data.h"
 
 class Interpreter {
   public:
@@ -52,5 +53,5 @@ class Interpreter {
     Interpreter& operator=(const Interpreter& other) = delete;
 
     std::unordered_map<std::string, creatorType> creators_;
-    std::stack<int> numStack_;
+    data numStack_;
 };
