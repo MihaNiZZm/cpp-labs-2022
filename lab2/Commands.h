@@ -2,16 +2,17 @@
 
 #include <iostream>
 #include <stack>
+#include "Data.h"
 
 class Command {
 public:
-    virtual void apply(std::stack<int>& numStack) = 0;
+    virtual void apply(data& numStack) = 0;
     virtual ~Command() = 0;
 };
 
 class Multiply: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int res = numStack.top();
         numStack.pop();
         res *= numStack.top();
@@ -25,7 +26,7 @@ public:
 
 class Add: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int res = numStack.top();
         numStack.pop();
         res += numStack.top();
@@ -39,7 +40,7 @@ public:
 
 class Divide: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int divider = numStack.top();
         numStack.pop();
         int divident = numStack.top();
@@ -53,7 +54,7 @@ public:
 
 class Subtract: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int deductible = numStack.top();
         numStack.pop();
         int reduced = numStack.top();
@@ -67,7 +68,7 @@ public:
 
 class Mod: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int divider = numStack.top();
         numStack.pop();
         int divident = numStack.top();
@@ -81,7 +82,7 @@ public:
 
 class Dup: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         numStack.push(numStack.top());
     }
     ~Dup() override {
@@ -91,7 +92,7 @@ public:
 
 class Drop: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         numStack.pop();
     }
     ~Drop() override {
@@ -101,7 +102,7 @@ public:
 
 class Write: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         std::cout << numStack.top() << std::endl;
         numStack.pop();
     }
@@ -112,7 +113,7 @@ public:
 
 class Swap: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int num1, num2;
         num1 = numStack.top();
         numStack.pop();
@@ -129,7 +130,7 @@ public:
 
 class Rotate: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int num1, num2, num3;
         num1 = numStack.top();
         numStack.pop();
@@ -149,7 +150,7 @@ public:
 
 class CopySecond: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int num1, num2;
         num1 = numStack.top();
         numStack.pop();
@@ -165,7 +166,7 @@ public:
 
 class WriteAsAscii: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         std::cout << char(numStack.top()) << std::endl;
         numStack.pop();
     }
@@ -176,7 +177,7 @@ public:
 
 class LineBreak: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         std::cout << std::endl;
     }
     ~LineBreak() override {
@@ -186,7 +187,7 @@ public:
 
 class More: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int left, right;
         right = numStack.top();
         numStack.pop();
@@ -207,7 +208,7 @@ public:
 
 class Less: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int left, right;
         right = numStack.top();
         numStack.pop();
@@ -228,7 +229,7 @@ public:
 
 class Equal: public Command {
 public:
-    void apply(std::stack<int>& numStack) override {
+    void apply(data& numStack) override {
         int left, right;
         right = numStack.top();
         numStack.pop();
@@ -246,18 +247,3 @@ public:
     
     }
 };
-
-class WriteString: public Command {
-public:
-    WriteString(const std::string string) : stringToWrite_(string) {}
-
-    void apply(std::stack<int>& numStack) override {
-        std::cout << stringToWrite_ << std::endl;
-    }
-    ~WriteString() override {
-        
-    }
-private:
-    std::string stringToWrite_;
-};
-

@@ -77,17 +77,4 @@ namespace {
         return new Equal();
     }
     bool equalCommand = Interpreter::getInstance().registerCreator("<", equalCreator);
-
-    Command* writeStringCreator(std::string::iterator& it, const std::string::iterator& end) {
-        auto quoteIt = std::find_if(it, end, [](char c) { return c == '\"'; });
-        if (quoteIt == end) {
-            // TODO: throw and error "no closing quotation mark for this command".
-        }
-        std::string body = "";
-        for (auto i = it; i != quoteIt; ++i) {
-            body += *i;
-        }
-        return new WriteString(body);
-    }
-    bool writeStringCommand = Interpreter::getInstance().registerCreator(".\"", writeStringCreator);
 }

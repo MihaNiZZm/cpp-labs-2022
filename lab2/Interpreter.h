@@ -14,44 +14,68 @@
 #include "Data.h"
 
 class Interpreter {
-  public:
+public:
     typedef std::function<Command* (std::string::iterator&, const std::string::iterator&)> creatorType;
 
     static Interpreter& getInstance() {
-      static Interpreter i;
-      return i;
+        static Interpreter i;
+        return i;
     }
 
     bool registerCreator(std::string name, const creatorType& creator) {
-      creators_[name] = creator;
-      return true;
+        creators_[name] = creator;
+        return true;
     }
 
     std::list<Command*> getCommands(const std::string::iterator& begin, const std::string::iterator& end) {
-      std::list<std::string> strCommands;
-      std::list<Command*> commands;
-      std::string newCommand = "";
+        std::list<std::string> strCommands;
+        std::list<Command*> commands;
+        std::string newCommand = "";
+        std::string::iterator it = begin;
       
-      getWords(strCommands, begin, end);
+        getWords(strCommands, begin, end);
 
-      for (std::string cmd : strCommands) {
-        if (isNumber(cmd)) {
-          numStack_.push(stoi(cmd));
-          // TODO: throw error if number doesn't fit into int type range.
+        for (std::string cmd : strCommands) {
+            if (isNumber(cmd)) {
+                try {
+                    data_.push(stoi(cmd));
+                } catch(std::out_of_range const& errorMessage) {
+                    data_.msgStream_() << errorMessage.what() << std::endl;
+                }
+            }
+            auto creatorIt = creators_.find(cmd);
+            if (creatorIt == creators_.end()) {
+                // TODO: throw error "unknown command".
+            }
+            creatorType creator = (*creatorIt).second;
+            Command* newCmd = creator(it, end);
+            commands.push_back(newCmd);
         }
-        auto creatorIt = creators_.find(cmd);
-        if (creatorIt == creators_.end()) {
-          // TODO: throw error "unknown command"
-        }
-        creatorType creator = (*creatorIt).second;
-      }
+        return commands;
     }
 
-  private:
+    std::string interpret(const std::string::iterator& begin, const std::string::iterator& end) {
+        std::string::iterator it = begin;
+        try {
+            std::list<Command*> cmds = getCommands(it, end);
+            for (Command* cmd: cmds) {
+                cmd->apply(data_);
+                delete cmd;
+            }
+        } catch(interpreterError& error) {
+            std::cerr << error.what() << std::endl;
+        }
+        data_.msgStream_() << " ok" << std::endl;
+        return data_.msgStream_().str();
+    }
+
+private:
+    std::unordered_map<std::string, creatorType> creators_;
+    data data_;
+
+    friend void getWords(std::list<std::string>& str, const std::string::iterator& begin, const std::string::iterator& end);
+
     Interpreter() = default;
     Interpreter(const Interpreter& other) = delete;
     Interpreter& operator=(const Interpreter& other) = delete;
-
-    std::unordered_map<std::string, creatorType> creators_;
-    data numStack_;
 };
