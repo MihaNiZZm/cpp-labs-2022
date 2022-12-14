@@ -185,10 +185,7 @@ linkedhs::iterator linkedhs::end() const {
 }
 
 void linkedhs::clear() {
-    for (int i = 0; i < capacity_; ++i) {
-        if (numberOfBuckets_ == 0) {
-            break;
-        }
+    for (int i = 0; i < capacity_ && numberOfBuckets_ > 0; ++i) {
         if (!data_[i]) {
             continue;
         }

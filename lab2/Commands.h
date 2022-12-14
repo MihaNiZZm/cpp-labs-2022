@@ -4,14 +4,24 @@
 #include <stack>
 
 #include "Data.h"
-#include "Interpreter.h"
 #include "InterpreterError.h"
 
 class Command {
 public:
     virtual void apply(data& numStack) = 0;
+    // CR: possible will break when smart pointers added
     virtual ~Command() = 0;
 };
+
+//class BinOp: public Command {
+//
+//    void apply(data &numStack) override {
+//      // CODE
+//    }
+//
+//    // virtual ???
+//
+//};
 
 class Multiply: public Command {
 public:
@@ -21,9 +31,6 @@ public:
         res *= numStack.top();
         numStack.pop();
         numStack.push(res);
-    }
-    ~Multiply() override {
-
     }
 };
 
@@ -36,9 +43,6 @@ public:
         numStack.pop();
         numStack.push(res);
     }
-    ~Add() override {
-
-    }
 };
 
 class Divide: public Command {
@@ -49,9 +53,6 @@ public:
         int divident = numStack.top();
         numStack.pop();
         numStack.push(divident / divider);
-    }
-    ~Divide() override {
-
     }
 };
 
@@ -64,9 +65,6 @@ public:
         numStack.pop();
         numStack.push(reduced - deductible);
     }
-    ~Subtract() override {
-
-    }
 };
 
 class Mod: public Command {
@@ -78,18 +76,12 @@ public:
         numStack.pop();
         numStack.push(divident % divider);
     }
-    ~Mod() override {
-
-    }
 };
 
 class Dup: public Command {
 public:
     void apply(data& numStack) override {
         numStack.push(numStack.top());
-    }
-    ~Dup() override {
-
     }
 };
 
@@ -98,9 +90,6 @@ public:
     void apply(data& numStack) override {
         numStack.pop();
     }
-    ~Drop() override {
-        
-    }
 };
 
 class Write: public Command {
@@ -108,9 +97,6 @@ public:
     void apply(data& numStack) override {
         std::cout << numStack.top() << std::endl;
         numStack.pop();
-    }
-    ~Write() override {
-        
     }
 };
 
@@ -125,9 +111,6 @@ public:
 
         numStack.push(num1);
         numStack.push(num2);
-    }
-    ~Swap() override {
-        
     }
 };
 
@@ -146,9 +129,6 @@ public:
         numStack.push(num3);
         numStack.push(num2);
     }
-    ~Rotate() override {
-        
-    }
 };
 
 class CopySecond: public Command {
@@ -162,9 +142,6 @@ public:
         numStack.push(num1);
         numStack.push(num2);
     }
-    ~CopySecond() override {
-        
-    }
 };
 
 class WriteAsAscii: public Command {
@@ -173,18 +150,12 @@ public:
         std::cout << char(numStack.top()) << std::endl;
         numStack.pop();
     }
-    ~WriteAsAscii() override {
-        
-    }
 };
 
 class LineBreak: public Command {
 public:
     void apply(data& numStack) override {
         std::cout << std::endl;
-    }
-    ~LineBreak() override {
-        
     }
 };
 
@@ -204,9 +175,6 @@ public:
             numStack.push(0);
         }
     }
-    ~More() override {
-        
-    }
 };
 
 class Less: public Command {
@@ -225,9 +193,6 @@ public:
             numStack.push(0);
         }
     }
-    ~Less() override {
-        
-    }
 };
 
 class Equal: public Command {
@@ -245,8 +210,5 @@ public:
         else {
             numStack.push(0);
         }
-    }
-    ~Equal() override {
-    
     }
 };

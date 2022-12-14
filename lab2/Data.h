@@ -14,7 +14,22 @@ public:
     void push(int number);
 private:
     std::stack<int> data_;
-    friend class Interpreter;
 
     data() = default;
+};
+
+struct context {
+    stack stack;
+    std::stringstream out;
+};
+
+class stack {
+public:
+    // CR: merge top + pop
+    void pop();
+    int top();
+    void push(int number);
+
+private:
+    std::stack<int> stack_;
 };
