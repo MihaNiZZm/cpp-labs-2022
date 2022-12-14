@@ -2,7 +2,10 @@
 
 #include <iostream>
 #include <stack>
+
 #include "Data.h"
+#include "Interpreter.h"
+#include "InterpreterError.h"
 
 class Command {
 public:
