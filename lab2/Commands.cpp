@@ -2,79 +2,20 @@
 #include "Interpreter.h"
 
 namespace {
-
-    Command* multiplyCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Multiply();
-    }
-    bool multiplyCommand = Interpreter::getInstance().registerCreator("*", multiplyCreator);
-
-    Command* addCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Add();
-    }
-    bool addCommand = Interpreter::getInstance().registerCreator("+", addCreator);
-
-    Command* divideCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Divide();
-    }
-    bool divideCommand = Interpreter::getInstance().registerCreator("/", divideCreator);
-
-    Command* subtractCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Subtract();
-    }
-    bool subtractCommand = Interpreter::getInstance().registerCreator("-", subtractCreator);
-
-    Command* modCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Mod();
-    }
-    bool modCommand = Interpreter::getInstance().registerCreator("mod", modCreator);
-
-    Command* dupCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Dup();
-    }
-    bool dupCommand = Interpreter::getInstance().registerCreator("dup", dupCreator);
-
-    Command* writeCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Write();
-    }
-    bool writeCommand = Interpreter::getInstance().registerCreator(".", writeCreator);
-
-    Command* swapCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Swap();
-    }
-    bool swapCommand = Interpreter::getInstance().registerCreator("swap", swapCreator);
-
-    Command* rotateCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Rotate();
-    }
-    bool rotateCommand = Interpreter::getInstance().registerCreator("rot", rotateCreator);
-
-    Command* copySecondCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new CopySecond();
-    }
-    bool copySecondCommand = Interpreter::getInstance().registerCreator("over", copySecondCreator);
-
-    Command* writeAsAsciiCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new WriteAsAscii();
-    }
-    bool writeAsAsciiCommand = Interpreter::getInstance().registerCreator("emit", writeAsAsciiCreator);
-
-    Command* lineBreakCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new LineBreak();
-    }
-    bool lineBreakCommand = Interpreter::getInstance().registerCreator("cr", lineBreakCreator);
-
-    Command* moreCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new More();
-    }
-    bool moreCommand = Interpreter::getInstance().registerCreator(">", moreCreator);
-
-    Command* lessCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Less();
-    }
-    bool lessCommand = Interpreter::getInstance().registerCreator("<", lessCreator);
-
-    Command* equalCreator(std::string::iterator& it, const std::string::iterator& end) {
-        return new Equal();
-    }
-    bool equalCommand = Interpreter::getInstance().registerCreator("<", equalCreator);
+    bool addMultiply = Interpreter::getInstance().addCommandToMap("*", std::make_unique<Multiply>());
+    bool addAdd = Interpreter::getInstance().addCommandToMap("+", std::make_unique<Add>());
+    bool addDivide = Interpreter::getInstance().addCommandToMap("/", std::make_unique<Divide>());
+    bool addSubtract = Interpreter::getInstance().addCommandToMap("-", std::make_unique<Subtract>());
+    bool addMod = Interpreter::getInstance().addCommandToMap("mod", std::make_unique<Mod>());
+    bool addDup = Interpreter::getInstance().addCommandToMap("dup", std::make_unique<Dup>());
+    bool addDrop = Interpreter::getInstance().addCommandToMap("drop", std::make_unique<Drop>());
+    bool addWrite = Interpreter::getInstance().addCommandToMap(".", std::make_unique<Write>());
+    bool addSwap = Interpreter::getInstance().addCommandToMap("swap", std::make_unique<Swap>());
+    bool addRotate = Interpreter::getInstance().addCommandToMap("rot", std::make_unique<Rotate>());
+    bool addCopySecond = Interpreter::getInstance().addCommandToMap("over", std::make_unique<CopySecond>());
+    bool addWriteAsAscii = Interpreter::getInstance().addCommandToMap("emit", std::make_unique<WriteAsAscii>());
+    bool addLineBreak = Interpreter::getInstance().addCommandToMap("cr", std::make_unique<LineBreak>());
+    bool addGreater = Interpreter::getInstance().addCommandToMap(">", std::make_unique<Greater>());
+    bool addLess = Interpreter::getInstance().addCommandToMap("<", std::make_unique<Less>());
+    bool addEqual = Interpreter::getInstance().addCommandToMap("=", std::make_unique<Equal>());
 }

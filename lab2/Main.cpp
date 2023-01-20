@@ -1,8 +1,5 @@
-#include <iostream>
-
 #include "Data.h"
 #include "Commands.h"
-#include "Parser.h"
 #include "Interpreter.h"
 #include "InterpreterError.h"
 

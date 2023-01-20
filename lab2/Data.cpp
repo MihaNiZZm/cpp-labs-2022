@@ -1,13 +1,19 @@
 #include "Data.h"
 
-void data::pop() {
-    data_.pop();
+void stack::pop() {
+    stack_.pop();
 }
 
-void data::push(int number) {
-    data_.push(number);
+void stack::push(int number) {
+    stack_.push(number);
 }
 
-int data::top() {
-    return data_.top();
+int stack::top() {
+    return stack_.top();
+}
+
+int stack::topPop() {
+   int result = stack_.top();
+   stack_.pop();
+   return result; 
 }

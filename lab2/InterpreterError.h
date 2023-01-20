@@ -4,7 +4,7 @@
 #include <exception>
 #include <string>
 
-class interpreterError: public std::runtime_error {
+class InterpreterError: public std::runtime_error {
 public:
-    interpreterError(const std::string & msg): std::runtime_error(msg) {}
+    InterpreterError(const std::string & msg): std::runtime_error(msg) {}
 };
