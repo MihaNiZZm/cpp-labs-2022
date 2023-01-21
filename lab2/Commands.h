@@ -120,7 +120,7 @@ public:
 class WriteAsAscii: public Command {
 public:
     void apply(context& data) override {
-        data.msgStream_ << char(data.stack_.topPop()) << std::endl;
+        data.msgStream_ << char(data.stack_.topPop());
     }
 };
 
@@ -131,32 +131,21 @@ public:
     }
 };
 
-class LogicalOperation: public Command {
-    void apply(context& data) override {
-        int number2 = data.stack_.topPop();
-        int number1 = data.stack_.topPop();
-        int result = operation(number1, number2);
-        data.stack_.customPush(result);
-    }
-
-    virtual int operation(int num1, int num2) = 0;
-};
-
-class Greater: public LogicalOperation {
+class Greater: public BinaryOperation {
 public:
     int operation(int num1, int num2) override {
         return num1 > num2 ? 1 : 0;
     }
 };
 
-class Less: public LogicalOperation {
+class Less: public BinaryOperation {
 public:
     int operation(int num1, int num2) override {
         return num1 < num2 ? 1 : 0;
     }
 };
 
-class Equal: public LogicalOperation {
+class Equal: public BinaryOperation {
 public:
     int operation(int num1, int num2) override {
         return num1 == num2 ? 1 : 0;
