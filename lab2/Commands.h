@@ -120,7 +120,7 @@ public:
 class WriteAsAscii: public Command {
 public:
     void apply(context& data) override {
-        data.msgStream_ << char(data.stack_.topPop());
+        data.msgStream_ << char(data.stack_.topPop()) << " ";
     }
 };
 
