@@ -1,33 +1,16 @@
 #include "Interpreter.h"
 
-void Interpreter::getWords(std::list<std::string>& str, const std::string::iterator& begin, const std::string::iterator& end) {
-    std::string::iterator it = begin;
-    std::string tempWord = "";
-    while (it != end) {
-        std::string strToPrint;
-        if (isWriteString(it)) {
-            it += 3;
-            std::string::iterator temp = std::find_if(it, end, [&strToPrint, it](char c) mutable {
-                strToPrint += *it; 
-                return c == '"'; });
-        }
-        ++it;
-        Interpreter::getInstance().data_.msgStream_ << strToPrint << std::endl;
-        strToPrint = "";
-        continue;
-
-        if (isspace(*it)) {
-            str.push_back(tempWord);
-            tempWord = "";
-        }
-        tempWord += *it;
-        ++it;
-    }
+bool Interpreter::addCommandToMap(std::string string, std::unique_ptr<Command> command) {
+    commands_[string] = std::move(command);
+    return true;
 }
 
-bool Interpreter::isNumber(std::string word) {
+bool Interpreter::isNumber(std::string& word) {
     std::string::iterator it = word.begin();
     if (!isdigit(*it) && *it != '-') {
+        return false;
+    }
+    if (word[0] == '-' && word.length() == 1) {
         return false;
     }
     ++it;
@@ -40,46 +23,85 @@ bool Interpreter::isNumber(std::string word) {
     return true;
 }
 
-bool Interpreter::isWriteString(const std::string::iterator& firstSymbol) {
-    if (!(*firstSymbol && *(firstSymbol + 1) && *(firstSymbol + 2))) {
-        return false;
-    }
-    return *firstSymbol == '.' && *(firstSymbol + 1) == '"' && *(firstSymbol + 2) == ' ';
+bool Interpreter::isWriteString(const std::string& word) {
+    return word == ".\"";
 }
 
-bool Interpreter::addCommandToMap(std::string string, std::unique_ptr<Command> command) {
-    commands_[string] = std::move(command);
-    return true;
+std::string::iterator& Interpreter::applyWriteString(std::string::iterator& begin, const std::string::iterator& end, context& context) {
+    std::string::iterator endOfString = std::find_if(begin, end, [](char c) { return c == '\"'; });
+    if (endOfString == end) {
+        throw InterpreterError("No closing quote.");
+    }
+    context.msgStream_ << std::string(begin + 1, endOfString) << " ";
+    begin = endOfString + 1;
+    return begin;
+}
+
+void Interpreter::putNumberOnStack(std::string& word) {
+    try {
+        numStack_.customPush(std::stoi(word));
+    }
+    catch (std::out_of_range) {
+        throw InterpreterError("Number is out of range of integer type.");
+    }
+}
+
+void Interpreter::applyCommand(std::string& word, context& context) {
+    if (!commands_[word]) {
+        std::string errorMessage = "Command \"" + word + "\" doesn't exists.";
+        throw InterpreterError(errorMessage);
+    }
+    commands_[word]->apply(context);
+}
+
+void Interpreter::interpretEachWord(const std::string::iterator& begin, const std::string::iterator& end, context& context) {
+    std::string::iterator it = begin;
+    std::string word = "";
+    while (it != end) {
+        if (isspace(*it) || ((it + 1) == end)) {
+            if ((it + 1) == end && *it != ' ') {
+                word += *it;
+            }
+
+            if (word == "") {
+                ++it;
+                continue;
+            }
+
+            if (isWriteString(word)) {
+                it = applyWriteString(it, end, context);
+                word = "";
+                continue;
+            }
+
+            if (isNumber(word)) {
+                putNumberOnStack(word);
+            }
+            else {
+                applyCommand(word, context);
+            }
+            word = "";
+            ++it;
+            continue;
+        }
+        word += *it;
+        ++it;
+    }
 }
 
 std::string Interpreter::interpret(const std::string::iterator& begin, const std::string::iterator& end) {
-    data_.msgStream_.str("");
-    std::list<std::string> stringCommands;
-    getWords(stringCommands, begin, end);
-
+    std::string::iterator it = begin;
+    std::stringstream outStream;
+    context context(numStack_, outStream);
+    
     try {
-        for (std::string cmd : stringCommands) {
-            if (isNumber(cmd)) {
-                try {
-                    data_.stack_.push(stoi(cmd));
-                } catch(std::out_of_range const& errorMessage) {
-                    data_.msgStream_ << errorMessage.what() << std::endl;
-                }
-            }
-            auto finder = commands_.find(cmd);
-            if (finder == commands_.end()) {
-                throw InterpreterError("Unknown command.");
-            }
-            std::unique_ptr<Command> newCmd = std::move(commands_[cmd]);
-            newCmd->apply(data_);
+        interpretEachWord(it, end, context);
+        if (outStream.str() == "") {
+            outStream << " ok" << std::endl;
         }
-        
-    } catch(InterpreterError& error) {
-        std::cerr << error.what() << std::endl;
     }
-    // CR: only when no commands printed
-    if (data_.msgStream_.str().empty()) {
-        data_.msgStream_ << " ok" << std::endl;
+    catch (InterpreterError& error) {
+        outStream << error.what() << std::endl;
     }
-    return data_.msgStream_.str();
+    return outStream.str();
 }

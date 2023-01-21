@@ -1,8 +1,6 @@
 #pragma once
 
-#include <stack>
 #include <unordered_map>
-#include <string>
 #include <functional>
 #include <list>
 #include <cctype>
@@ -27,13 +25,17 @@ public:
 
 private:
     std::unordered_map<std::string, std::unique_ptr<Command>> commands_;
-    context data_;
+    stack numStack_;
 
     Interpreter() = default;
     Interpreter(const Interpreter& other) = delete;
     Interpreter& operator=(const Interpreter& other) = delete;
 
-    void getWords(std::list<std::string>& str, const std::string::iterator& begin, const std::string::iterator& end);
-    bool isNumber(std::string word);
-    bool isWriteString(const std::string::iterator& firstSymbol);
+    void interpretEachWord(const std::string::iterator& begin, const std::string::iterator& end, context& context);
+    std::string::iterator& applyWriteString(std::string::iterator& begin, const std::string::iterator& end, context& context);
+    void applyCommand(std::string& word, context& context);
+    void putNumberOnStack(std::string& word);
+
+    bool isNumber(std::string& word);
+    bool isWriteString(const std::string& word);
 };

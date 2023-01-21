@@ -8,14 +8,16 @@
 class stack {
 public:
     int topPop();
-    void pop();
-    int top();
-    void push(int number);
+    void customPop();
+    int customTop();
+    void customPush(int number);
 private:
     std::stack<int> stack_;
 };
 
 struct context {
-    std::stringstream msgStream_;
-    stack stack_;
+    std::stringstream& msgStream_;
+    stack& stack_;
+
+    context(stack& stack, std::stringstream& stream): stack_(stack), msgStream_(stream) {}
 };
