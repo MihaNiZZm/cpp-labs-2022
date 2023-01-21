@@ -4,7 +4,6 @@
 void stack::customPop() {
     if (stack_.size() == 0) {
         throw InterpreterError("Stack Underflow.");
-        return;
     }
     stack_.pop();
 }
@@ -16,7 +15,6 @@ void stack::customPush(int number) {
 int stack::customTop() {
     if (stack_.size() == 0) {
         throw InterpreterError("Stack Underflow.");
-        return 0;
     }
     return stack_.top();
 }
@@ -24,7 +22,6 @@ int stack::customTop() {
 int stack::topPop() {
     if (stack_.size() == 0) {
         throw InterpreterError("Stack Underflow.");
-        return 0;
     }
    int result = stack_.top();
    stack_.pop();

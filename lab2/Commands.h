@@ -12,60 +12,50 @@ public:
     virtual ~Command() {}
 };
 
-class Multiply: public Command {
-public:
+class BinaryOperation: public Command {
     void apply(context& data) override {
-        int res = data.stack_.topPop();
-        res *= data.stack_.topPop();
-        data.stack_.customPush(res);
+        int number2 = data.stack_.topPop();
+        int number1 = data.stack_.topPop();
+        int result = operation(number1, number2);
+        data.stack_.customPush(result);
     }
-    ~Multiply() = default;
+
+    virtual int operation(int num1, int num2) = 0;
 };
 
-class Add: public Command {
+class Multiply: public BinaryOperation {
 public:
-    void apply(context& data) override {
-        int res = data.stack_.topPop();
-        res += data.stack_.topPop();
-        data.stack_.customPush(res);
+    int operation(int num1, int num2) override {
+        return num1 * num2;
     }
-    ~Add() = default;
 };
 
-class Divide: public Command {
+class Add: public BinaryOperation {
 public:
-    void apply(context& data) override {
-        int divider = data.stack_.topPop();
-        int divident = data.stack_.topPop();
-        if (divider == 0) {
-            throw InterpreterError("Can't divide by zero.");
-        }
-        data.stack_.customPush(divident / divider);
+    int operation(int num1, int num2) override {
+        return num1 + num2;
     }
-    ~Divide() = default;
 };
 
-class Subtract: public Command {
+class Divide: public BinaryOperation {
 public:
-    void apply(context& data) override {
-        int deductible = data.stack_.topPop();
-        int reduced = data.stack_.topPop();
-        data.stack_.customPush(reduced - deductible);
+    int operation(int num1, int num2) override {
+        return num1 / num2;
     }
-    ~Subtract() = default;
 };
 
-class Mod: public Command {
+class Subtract: public BinaryOperation {
 public:
-    void apply(context& data) override {
-        int divider = data.stack_.topPop();
-        int divident = data.stack_.topPop();
-        if (divider == 0) {
-            throw InterpreterError("Can't divide by zero.");
-        }
-        data.stack_.customPush(divident % divider);
+    int operation(int num1, int num2) override {
+        return num1 - num2;
     }
-    ~Mod() = default;
+};
+
+class Mod: public BinaryOperation {
+public:
+    int operation(int num1, int num2) override {
+        return num1 % num2;
+    }
 };
 
 class Dup: public Command {
@@ -73,7 +63,6 @@ public:
     void apply(context& data) override {
         data.stack_.customPush(data.stack_.customTop());
     }
-    ~Dup() = default;
 };
 
 class Drop: public Command {
@@ -81,7 +70,6 @@ public:
     void apply(context& data) override {
         data.stack_.customPop();
     }
-    ~Drop() = default;
 };
 
 class Write: public Command {
@@ -89,7 +77,6 @@ public:
     void apply(context& data) override {
         data.msgStream_ << data.stack_.topPop() << " ";
     }
-    ~Write() = default;
 };
 
 class Swap: public Command {
@@ -102,7 +89,6 @@ public:
         data.stack_.customPush(num1);
         data.stack_.customPush(num2);
     }
-    ~Swap() = default;
 };
 
 class Rotate: public Command {
@@ -117,7 +103,6 @@ public:
         data.stack_.customPush(num3);
         data.stack_.customPush(num2);
     }
-    ~Rotate() = default;
 };
 
 class CopySecond: public Command {
@@ -130,7 +115,6 @@ public:
         data.stack_.customPush(num1);
         data.stack_.customPush(num2);
     }
-    ~CopySecond() = default;
 };
 
 class WriteAsAscii: public Command {
@@ -138,7 +122,6 @@ public:
     void apply(context& data) override {
         data.msgStream_ << char(data.stack_.topPop()) << std::endl;
     }
-    ~WriteAsAscii() = default;
 };
 
 class LineBreak: public Command {
@@ -146,7 +129,6 @@ public:
     void apply(context& data) override {
         data.msgStream_ << std::endl;
     }
-    ~LineBreak() = default;
 };
 
 class Greater: public Command {
@@ -164,7 +146,6 @@ public:
             data.stack_.customPush(0);
         }
     }
-    ~Greater() = default;
 };
 
 class Less: public Command {
@@ -182,7 +163,6 @@ public:
             data.stack_.customPush(0);
         }
     }
-    ~Less() = default;
 };
 
 class Equal: public Command {
@@ -200,5 +180,4 @@ public:
             data.stack_.customPush(0);
         }
     }
-    ~Equal() = default;
 };

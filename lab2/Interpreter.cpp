@@ -33,15 +33,13 @@ std::string::iterator& Interpreter::applyWriteString(std::string::iterator& begi
         endOfString = std::find_if(begin, end, [](char c) { return c == '\"'; });
         if (endOfString == end) {
             throw InterpreterError("No closing quote.");
-            return endOfString;
         }
         context.msgStream_ << std::string(begin + 1, endOfString) << " ";
         begin = endOfString + 1;
         return begin;
     }
-    catch (std::length_error) {
+    catch (std::length_error&) {
         throw InterpreterError("No closing quote.");
-        return endOfString;
     }
 }
 
@@ -49,13 +47,13 @@ void Interpreter::putNumberOnStack(std::string& word) {
     try {
         numStack_.customPush(std::stoi(word));
     }
-    catch (std::out_of_range) {
+    catch (std::out_of_range&) {
         throw InterpreterError("Number is out of range of integer type.");
     }
 }
 
 void Interpreter::applyCommand(std::string& word, context& context) {
-    if (!commands_[word]) {
+    if (commands_.find(word) == commands_.end()) {
         std::string errorMessage = "Command \"" + word + "\" doesn't exists.";
         throw InterpreterError(errorMessage);
     }
@@ -102,18 +100,14 @@ std::string Interpreter::interpret(const std::string::iterator& begin, const std
     std::string::iterator it = begin;
     std::stringstream outStream;
     context context(numStack_, outStream);
-    
-    try {
-        interpretEachWord(it, end, context);
-        if (outStream.str() == "") {
-            outStream << "ok" << std::endl;
-        }
-        else {
-            outStream << std::endl;
-        }
+
+    interpretEachWord(it, end, context);
+    if (outStream.str() == "") {
+        outStream << "ok" << std::endl;
     }
-    catch (InterpreterError& error) {
-        outStream << error.what() << std::endl;
+    else {
+        outStream << std::endl;
     }
+
     return outStream.str();
 }
