@@ -6,7 +6,7 @@
 int main(int argc, char** argv) {
     std::string oneLine;
     while (true) {
-        std::cin >> oneLine;
+        getline(std::cin, oneLine);
         std::cout << Interpreter::getInstance().interpret(oneLine.begin(), oneLine.end());
     }
     return 0;

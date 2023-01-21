@@ -8,13 +8,13 @@ add_executable(interpreter_main
         Main.cpp
         Data.cpp
         Commands.cpp
-        Parser.cpp 
+        Interpreter.cpp
 )
 
 add_executable(interpreter_test
         Data.cpp
         Commands.cpp
-        Parser.cpp
+        Interpreter.cpp
         Tests.cpp
 )
 

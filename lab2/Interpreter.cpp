@@ -28,13 +28,21 @@ bool Interpreter::isWriteString(const std::string& word) {
 }
 
 std::string::iterator& Interpreter::applyWriteString(std::string::iterator& begin, const std::string::iterator& end, context& context) {
-    std::string::iterator endOfString = std::find_if(begin, end, [](char c) { return c == '\"'; });
-    if (endOfString == end) {
-        throw InterpreterError("No closing quote.");
+    std::string::iterator endOfString;
+    try {
+        endOfString = std::find_if(begin, end, [](char c) { return c == '\"'; });
+        if (endOfString == end) {
+            throw InterpreterError("No closing quote.");
+            return endOfString;
+        }
+        context.msgStream_ << std::string(begin + 1, endOfString) << " ";
+        begin = endOfString + 1;
+        return begin;
     }
-    context.msgStream_ << std::string(begin + 1, endOfString) << " ";
-    begin = endOfString + 1;
-    return begin;
+    catch (std::length_error) {
+        throw InterpreterError("No closing quote.");
+        return endOfString;
+    }
 }
 
 void Interpreter::putNumberOnStack(std::string& word) {
@@ -57,6 +65,7 @@ void Interpreter::applyCommand(std::string& word, context& context) {
 void Interpreter::interpretEachWord(const std::string::iterator& begin, const std::string::iterator& end, context& context) {
     std::string::iterator it = begin;
     std::string word = "";
+
     while (it != end) {
         if (isspace(*it) || ((it + 1) == end)) {
             if ((it + 1) == end && *it != ' ') {
@@ -97,7 +106,10 @@ std::string Interpreter::interpret(const std::string::iterator& begin, const std
     try {
         interpretEachWord(it, end, context);
         if (outStream.str() == "") {
-            outStream << " ok" << std::endl;
+            outStream << "ok" << std::endl;
+        }
+        else {
+            outStream << std::endl;
         }
     }
     catch (InterpreterError& error) {
