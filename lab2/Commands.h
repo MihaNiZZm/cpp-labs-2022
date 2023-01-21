@@ -131,53 +131,34 @@ public:
     }
 };
 
-class Greater: public Command {
-public:
+class LogicalOperation: public Command {
     void apply(context& data) override {
-        int left, right;
-        right = data.stack_.topPop();
-        left = data.stack_.customTop();
+        int number2 = data.stack_.topPop();
+        int number1 = data.stack_.topPop();
+        int result = operation(number1, number2);
+        data.stack_.customPush(result);
+    }
 
-        data.stack_.customPush(right);
-        if (left > right) {
-            data.stack_.customPush(1);
-        }
-        else {
-            data.stack_.customPush(0);
-        }
+    virtual int operation(int num1, int num2) = 0;
+};
+
+class Greater: public LogicalOperation {
+public:
+    int operation(int num1, int num2) override {
+        return num1 > num2 ? 1 : 0;
     }
 };
 
-class Less: public Command {
+class Less: public LogicalOperation {
 public:
-    void apply(context& data) override {
-        int left, right;
-        right = data.stack_.topPop();
-        left = data.stack_.customTop();
-
-        data.stack_.customPush(right);
-        if (left < right) {
-            data.stack_.customPush(1);
-        }
-        else {
-            data.stack_.customPush(0);
-        }
+    int operation(int num1, int num2) override {
+        return num1 < num2 ? 1 : 0;
     }
 };
 
-class Equal: public Command {
+class Equal: public LogicalOperation {
 public:
-    void apply(context& data) override {
-        int left, right;
-        right = data.stack_.topPop();
-        left = data.stack_.customTop();
-
-        data.stack_.customPush(right);
-        if (left == right) {
-            data.stack_.customPush(1);
-        }
-        else {
-            data.stack_.customPush(0);
-        }
+    int operation(int num1, int num2) override {
+        return num1 == num2 ? 1 : 0;
     }
 };
